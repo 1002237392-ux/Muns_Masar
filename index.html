@@ -1,829 +1,602 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="html-root">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التخطيط الذكي: مَسَار</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --navy: #1A237E;
-            --navy-light: #283593;
-            --green: #1B5E20;
-            --green-mid: #2E7D32;
-            --green-light: #E8F5E9;
-            --pink-bg: #FCE4EC;
-            --blue-bg: #E3F2FD;
-            --accent: #D32F2F;
-            --gold: #F9A825;
-            --surface: #FFFFFF;
-            --bg: #F0F4FF;
-            --text: #1a1a2e;
-            --text-muted: #5c6080;
-            --border: #dde3f0;
-            --radius: 16px;
-            --radius-sm: 8px;
-            --shadow: 0 4px 24px rgba(26,35,126,0.10);
-            --shadow-lg: 0 8px 40px rgba(26,35,126,0.15);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            padding-bottom: 4rem;
-        }
-
-        /* ── Header ── */
-        .header {
-            background: linear-gradient(135deg, var(--navy) 0%, #3949AB 100%);
-            padding: 2rem 1rem 3.5rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .header::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-        .header img { height: 80px; margin-bottom: 1rem; position: relative; z-index: 1; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
-        .header h1 { font-size: 2.4rem; font-weight: 800; color: #fff; margin-bottom: .5rem; position: relative; z-index: 1; letter-spacing: -0.5px; }
-        .header p { font-size: 1rem; color: rgba(255,255,255,0.78); font-style: italic; position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
-
-        /* ── Stepper ── */
-        .stepper-wrap {
-            max-width: 700px;
-            margin: -1.5rem auto 0;
-            padding: 0 1rem;
-            position: relative;
-            z-index: 10;
-        }
-        .stepper {
-            background: var(--surface);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            padding: 1.2rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
-        }
-        .step-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            flex: 1;
-            position: relative;
-        }
-        .step-item:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            top: 18px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--border);
-            z-index: 0;
-        }
-        .step-item.done:not(:last-child)::after { background: var(--green-mid); }
-        .step-circle {
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            background: var(--border);
-            color: var(--text-muted);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 14px;
-            position: relative; z-index: 1;
-            transition: all .3s;
-        }
-        .step-item.active .step-circle { background: var(--navy); color: #fff; box-shadow: 0 0 0 4px rgba(26,35,126,0.15); }
-        .step-item.done .step-circle { background: var(--green-mid); color: #fff; }
-        .step-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-align: center; }
-        .step-item.active .step-label { color: var(--navy); font-weight: 700; }
-        .step-item.done .step-label { color: var(--green-mid); }
-
-        /* ── Main container ── */
-        .container { max-width: 780px; margin: 2rem auto; padding: 0 1rem; }
-
-        /* ── Cards ── */
-        .card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border);
-        }
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--navy);
-            margin-bottom: 1.5rem;
-            padding-bottom: .75rem;
-            border-bottom: 2px solid var(--green-light);
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-        }
-        .card-title span { font-size: 1.4rem; }
-
-        /* ── Welcome ── */
-        .welcome-card {
-            background: linear-gradient(135deg, var(--pink-bg), #fff 60%);
-            border: 1px solid #f8bbd0;
-            text-align: center;
-        }
-        .welcome-card h2 { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
-        .welcome-card p { color: var(--text-muted); line-height: 1.9; font-size: 1rem; margin-bottom: 1.5rem; }
-        .welcome-card strong { color: var(--navy); }
-
-        /* ── Form ── */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
-        .form-group { display: flex; flex-direction: column; gap: 6px; }
-        .form-group.full { grid-column: 1 / -1; }
-        label { font-size: 13px; font-weight: 700; color: var(--text); }
-        input[type=text], input[type=number] {
-            padding: 10px 14px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-family: 'Tajawal', sans-serif;
-            font-size: 15px;
-            color: var(--text);
-            background: #fafbff;
-            outline: none;
-            transition: border-color .2s;
-        }
-        input:focus { border-color: var(--navy); background: #fff; }
-
-        /* ── Resources ── */
-        .resources-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-        .resource-chip {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 14px;
-            border: 1.5px solid var(--border);
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-muted);
-            background: #fafbff;
-            transition: all .2s;
-            user-select: none;
-        }
-        .resource-chip:hover { border-color: var(--navy); color: var(--navy); }
-        .resource-chip.selected {
-            background: var(--green-light);
-            border-color: var(--green-mid);
-            color: var(--green);
-            font-weight: 700;
-        }
-        .resource-chip input { display: none; }
-        .chip-icon { font-size: 15px; }
-
-        /* ── Drop zone ── */
-        .drop-zone {
-            border: 2px dashed var(--navy);
-            border-radius: var(--radius);
-            padding: 2.5rem 1rem;
-            text-align: center;
-            background: var(--blue-bg);
-            cursor: pointer;
-            transition: all .2s;
-            position: relative;
-        }
-        .drop-zone:hover, .drop-zone.dragover { background: #c5d9f5; border-color: #1565C0; }
-        .drop-zone p.main { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: .3rem; }
-        .drop-zone p.sub { font-size: 12px; color: var(--text-muted); }
-        .file-success {
-            display: none;
-            background: #E8F5E9;
-            border: 1.5px solid var(--green-mid);
-            border-radius: var(--radius-sm);
-            padding: 1rem 1.2rem;
-            color: var(--green);
-            font-weight: 700;
-            font-size: 14px;
-            align-items: center;
-            gap: 10px;
-            margin-top: 1rem;
-        }
-        .file-success.show { display: flex; }
-
-        /* ── Buttons ── */
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 8px;
-            padding: 12px 24px;
-            border-radius: var(--radius-sm);
-            font-family: 'Tajawal', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            transition: all .2s;
-        }
-        .btn-primary { background: var(--navy); color: #fff; }
-        .btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,126,0.25); }
-        .btn-green { background: var(--green); color: #fff; }
-        .btn-green:hover { background: var(--green-mid); transform: translateY(-1px); }
-        .btn-outline { background: transparent; border: 1.5px solid var(--navy); color: var(--navy); }
-        .btn-outline:hover { background: var(--navy); color: #fff; }
-        .btn-full { width: 100%; padding: 14px; font-size: 1.1rem; border-radius: 12px; }
-        .btn-copy {
-            background: var(--navy);
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: var(--radius-sm);
-        }
-        .btn-copy:hover { background: var(--navy-light); }
-        .btn-copy.copied { background: var(--green); }
-
-        /* ── Loading ── */
-        .loading-card { text-align: center; padding: 3rem; }
-        .spinner {
-            width: 60px; height: 60px;
-            border: 4px solid var(--border);
-            border-top-color: var(--navy);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1.5rem;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-card h2 { color: var(--navy); font-size: 1.3rem; margin-bottom: .5rem; }
-        .loading-card p { color: var(--text-muted); }
-
-        /* ── Progress dots ── */
-        .progress-dots { display: flex; justify-content: center; gap: 8px; margin-top: 1.5rem; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); animation: pulse-dot 1.4s ease infinite; }
-        .dot:nth-child(2) { animation-delay: .2s; }
-        .dot:nth-child(3) { animation-delay: .4s; }
-        @keyframes pulse-dot { 0%,80%,100%{opacity:.3} 40%{opacity:1;background:var(--navy)} }
-
-        /* ── Result / Prompt ── */
-        .result-header {
-            background: linear-gradient(135deg, #E8F5E9, #fff);
-            border: 1px solid #a5d6a7;
-            border-radius: var(--radius);
-            padding: 1.5rem 2rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .result-header .icon { font-size: 2.5rem; }
-        .result-header h2 { font-size: 1.3rem; font-weight: 700; color: var(--green); }
-        .result-header p { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
-
-        /* ── Tabs ── */
-        .tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
-        .tab-btn {
-            padding: 9px 20px;
-            border-radius: 50px;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            border: 1.5px solid var(--border);
-            background: var(--surface);
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all .2s;
-        }
-        .tab-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* ── Prompt box ── */
-        .prompt-box-wrap { position: relative; }
-        .prompt-box {
-            width: 100%;
-            min-height: 280px;
-            padding: 1.2rem 1.4rem;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-family: 'Tajawal', sans-serif;
-            font-size: 14px;
-            line-height: 1.8;
-            color: var(--text);
-            background: #fafbff;
-            resize: vertical;
-            direction: rtl;
-        }
-        .prompt-box:focus { outline: none; border-color: var(--navy); }
-
-        /* ── Instructions ── */
-        .instructions {
-            background: #FFF8E1;
-            border: 1px solid #FFE082;
-            border-radius: var(--radius-sm);
-            padding: 1.2rem 1.5rem;
-        }
-        .instructions h4 { font-size: 14px; font-weight: 700; color: #795548; margin-bottom: .75rem; }
-        .step-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: .6rem;
-            font-size: 13px;
-            color: var(--text);
-        }
-        .step-num {
-            min-width: 24px; height: 24px;
-            background: var(--navy);
-            color: #fff;
-            border-radius: 50%;
-            font-size: 12px;
-            font-weight: 700;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* ── Site links ── */
-        .sites-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 1rem; }
-        .site-link {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            padding: 14px 10px;
-            border-radius: var(--radius-sm);
-            border: 1.5px solid var(--border);
-            background: var(--surface);
-            text-decoration: none;
-            color: var(--text);
-            font-size: 13px;
-            font-weight: 600;
-            transition: all .2s;
-            cursor: pointer;
-        }
-        .site-link:hover { border-color: var(--navy); background: var(--blue-bg); transform: translateY(-2px); }
-        .site-link .site-icon { font-size: 1.6rem; }
-        .site-link .site-note { font-size: 11px; color: var(--text-muted); font-weight: 400; }
-
-        /* ── Utils ── */
-        .hidden { display: none !important; }
-        .text-center { text-align: center; }
-        .mt-1 { margin-top: .5rem; }
-        .mt-2 { margin-top: 1rem; }
-        .mt-3 { margin-top: 1.5rem; }
-        .flex-end { display: flex; justify-content: flex-end; gap: .75rem; margin-top: 1.5rem; }
-
-        /* ── Tips banner ── */
-        .tip-banner {
-            background: #E8EAF6;
-            border-right: 4px solid var(--navy);
-            border-radius: var(--radius-sm);
-            padding: .9rem 1.2rem;
-            font-size: 13px;
-            color: var(--navy);
-            margin-bottom: 1.5rem;
-            line-height: 1.7;
-        }
-
-        @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .header h1 { font-size: 1.7rem; }
-            .sites-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مَسَار | Massar | מסלול</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1A237E;--navy-l:#283593;
+  --green:#1B5E20;--green-m:#2E7D32;--green-l:#E8F5E9;
+  --pink:#FCE4EC;--blue-l:#E3F2FD;
+  --surf:#fff;--bg:#F0F4FF;
+  --txt:#1a1a2e;--muted:#5c6080;--brd:#dde3f0;
+  --r:16px;--rs:8px;
+  --sh:0 4px 24px rgba(26,35,126,.10);
+  --sh2:0 8px 40px rgba(26,35,126,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding-bottom:4rem}
+.lang-bar{background:var(--navy);display:flex;justify-content:flex-end;align-items:center;padding:8px 20px;gap:6px}
+.lang-btn{padding:5px 14px;border-radius:50px;font-size:12px;font-weight:700;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.7);cursor:pointer;transition:all .2s;font-family:'Tajawal',sans-serif}
+.lang-btn.active{background:#fff;color:var(--navy);border-color:#fff}
+.lang-btn:hover:not(.active){background:rgba(255,255,255,.15);color:#fff}
+.hdr{background:linear-gradient(135deg,var(--navy) 0%,#3949AB 100%);padding:2rem 1rem 3.5rem;text-align:center;position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23fff' fill-opacity='.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hdr img{height:80px;margin-bottom:1rem;position:relative;z-index:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))}
+.hdr h1{font-size:2.2rem;font-weight:800;color:#fff;margin-bottom:.5rem;position:relative;z-index:1}
+.hdr p{font-size:.95rem;color:rgba(255,255,255,.78);font-style:italic;position:relative;z-index:1;max-width:600px;margin:0 auto}
+.stp-wrap{max-width:700px;margin:-1.5rem auto 0;padding:0 1rem;position:relative;z-index:10}
+.stp{background:var(--surf);border-radius:var(--r);box-shadow:var(--sh2);padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:center}
+.si{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative}
+.si:not(:last-child)::after{content:'';position:absolute;top:18px;left:0;width:100%;height:2px;background:var(--brd);z-index:0}
+.si.done:not(:last-child)::after{background:var(--green-m)}
+.sc{width:36px;height:36px;border-radius:50%;background:var(--brd);color:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;position:relative;z-index:1;transition:all .3s}
+.si.active .sc{background:var(--navy);color:#fff;box-shadow:0 0 0 4px rgba(26,35,126,.15)}
+.si.done .sc{background:var(--green-m);color:#fff}
+.sl{font-size:11px;color:var(--muted);font-weight:500;text-align:center}
+.si.active .sl{color:var(--navy);font-weight:700}
+.si.done .sl{color:var(--green-m)}
+.wrap{max-width:780px;margin:2rem auto;padding:0 1rem}
+.card{background:var(--surf);border-radius:var(--r);box-shadow:var(--sh);padding:2rem;margin-bottom:1.5rem;border:1px solid var(--brd)}
+.ctitle{font-size:1.3rem;font-weight:700;color:var(--navy);margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:2px solid var(--green-l);display:flex;align-items:center;gap:.5rem}
+.wcard{background:linear-gradient(135deg,var(--pink),#fff 60%);border:1px solid #f8bbd0;text-align:center}
+.wcard h2{font-size:1.5rem;font-weight:700;color:var(--txt);margin-bottom:1rem}
+.wcard p{color:var(--muted);line-height:1.9;font-size:1rem;margin-bottom:1.5rem}
+.wcard strong{color:var(--navy)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.5rem}
+.fg{display:flex;flex-direction:column;gap:6px}
+.lbl{font-size:13px;font-weight:700;color:var(--txt);display:block;margin-bottom:6px}
+input[type=text],input[type=number]{padding:10px 14px;border:1.5px solid var(--brd);border-radius:var(--rs);font-family:'Tajawal',sans-serif;font-size:15px;color:var(--txt);background:#fafbff;outline:none;transition:border-color .2s;width:100%}
+input:focus{border-color:var(--navy);background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1.5px solid var(--brd);border-radius:50px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);background:#fafbff;transition:all .2s;user-select:none}
+.chip:hover{border-color:var(--navy);color:var(--navy)}
+.chip.on{background:var(--green-l);border-color:var(--green-m);color:var(--green);font-weight:700}
+.dz{border:2px dashed var(--navy);border-radius:var(--r);padding:2.5rem 1rem;text-align:center;background:var(--blue-l);cursor:pointer;transition:all .2s}
+.dz:hover,.dz.over{background:#c5d9f5;border-color:#1565C0}
+.dz-icon{font-size:2.5rem;margin-bottom:.5rem}
+.dz-main{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:.3rem}
+.dz-sub{font-size:12px;color:var(--muted)}
+.fok{display:none;background:#E8F5E9;border:1.5px solid var(--green-m);border-radius:var(--rs);padding:1rem 1.2rem;color:var(--green);font-weight:700;font-size:14px;align-items:center;gap:10px;margin-top:1rem}
+.fok.show{display:flex}
+.pbox{margin-top:1rem;padding:1rem;background:#fff;border:1px solid var(--brd);border-radius:var(--rs);font-size:12px;color:var(--muted);line-height:1.7;display:none;max-height:220px;overflow-y:auto}
+.pbox.show{display:block}
+.pbox h4{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:.5rem}
+.pbox table{width:100%;border-collapse:collapse;font-size:11px;margin-top:.5rem}
+.pbox th{background:#E3F2FD;padding:4px 6px;text-align:center;border:1px solid var(--brd);font-weight:700}
+.pbox td{padding:3px 6px;border:1px solid var(--brd);text-align:center}
+.pbox td:first-child{text-align:right;font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--rs);font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+.btn-p{background:var(--navy);color:#fff}
+.btn-p:hover{background:var(--navy-l);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,35,126,.25)}
+.btn-g{background:var(--green);color:#fff}
+.btn-g:hover{background:var(--green-m);transform:translateY(-1px)}
+.btn-o{background:transparent;border:1.5px solid var(--navy);color:var(--navy)}
+.btn-o:hover{background:var(--navy);color:#fff}
+.btn-c{background:var(--navy);color:#fff;padding:10px 20px;font-size:14px;border-radius:var(--rs)}
+.btn-c.ok{background:var(--green)}
+.ldc{text-align:center;padding:3rem}
+.spin{width:60px;height:60px;border:4px solid var(--brd);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 1.5rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ldc h2{color:var(--navy);font-size:1.3rem;margin-bottom:.5rem}
+.ldc p{color:var(--muted)}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:1.5rem}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--brd);animation:pd 1.4s ease infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes pd{0%,80%,100%{opacity:.3}40%{opacity:1;background:var(--navy)}}
+.rh{background:linear-gradient(135deg,#E8F5E9,#fff);border:1px solid #a5d6a7;border-radius:var(--r);padding:1.5rem 2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem}
+.rh-ico{font-size:2.5rem}
+.rh h2{font-size:1.3rem;font-weight:700;color:var(--green)}
+.rh p{font-size:13px;color:var(--muted);margin-top:3px}
+.tabs{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap}
+.tb{padding:9px 20px;border-radius:50px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:600;border:1.5px solid var(--brd);background:var(--surf);color:var(--muted);cursor:pointer;transition:all .2s}
+.tb.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tc{display:none}
+.tc.on{display:block}
+.pt{width:100%;min-height:340px;padding:1.2rem 1.4rem;border:1.5px solid var(--brd);border-radius:var(--rs);font-family:'Tajawal',sans-serif;font-size:13px;line-height:1.8;color:var(--txt);background:#fafbff;resize:vertical}
+.pt:focus{outline:none;border-color:var(--navy)}
+.inst-box{background:#FFF8E1;border:1px solid #FFE082;border-radius:var(--rs);padding:1.2rem 1.5rem}
+.inst-box h4{font-size:14px;font-weight:700;color:#795548;margin-bottom:.75rem}
+.sr{display:flex;align-items:flex-start;gap:12px;margin-bottom:.6rem;font-size:13px;color:var(--txt)}
+.sn{min-width:24px;height:24px;background:var(--navy);color:#fff;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:1rem}
+.sl-a{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 10px;border-radius:var(--rs);border:1.5px solid var(--brd);background:var(--surf);text-decoration:none;color:var(--txt);font-size:13px;font-weight:600;transition:all .2s}
+.sl-a:hover{border-color:var(--navy);background:var(--blue-l);transform:translateY(-2px)}
+.sl-ico{font-size:1.6rem}
+.sl-note{font-size:11px;color:var(--muted);font-weight:400}
+.tip{background:#E8EAF6;border-right:4px solid var(--navy);border-radius:var(--rs);padding:.9rem 1.2rem;font-size:13px;color:var(--navy);margin-bottom:1.5rem;line-height:1.7}
+.tip-g{background:#E8F5E9;border-color:var(--green-m);color:var(--green)}
+body.ltr .tip{border-right:none;border-left:4px solid var(--navy)}
+.hidden{display:none!important}
+.fe{display:flex;justify-content:flex-end;gap:.75rem;margin-top:1.5rem}
+.mt3{margin-top:1.5rem}
+@media(max-width:600px){.fgrid{grid-template-columns:1fr}.hdr h1{font-size:1.7rem}.sgrid{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head>
 <body>
 
-<!-- ═══ HEADER ═══ -->
-<div class="header">
-    <img src="https://i.postimg.cc/G3ghK9PH/sml-byt-hspr.png" alt="شعار المدرسة">
-    <h1>منصة التخطيط الذكي: مَسَار</h1>
-    <p>"من البصيرة إلى الأثر: نمهد لك المسار لتزرع بذور النجاح في مسيرة كل طالب."</p>
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('ar',this)">العربية</button>
+  <button class="lang-btn" onclick="setLang('he',this)">עברית</button>
+  <button class="lang-btn" onclick="setLang('en',this)">English</button>
 </div>
 
-<!-- ═══ STEPPER ═══ -->
-<div class="stepper-wrap">
-    <div class="stepper">
-        <div class="step-item active" id="s1">
-            <div class="step-circle">1</div>
-            <div class="step-label">البيانات الأساسية</div>
-        </div>
-        <div class="step-item" id="s2">
-            <div class="step-circle">2</div>
-            <div class="step-label">رفع المسح</div>
-        </div>
-        <div class="step-item" id="s3">
-            <div class="step-circle">3</div>
-            <div class="step-label">البرومت الجاهز</div>
-        </div>
-    </div>
+<div class="hdr">
+  <img src="https://i.postimg.cc/Sx1tnFck/lwgw-byt-hspr.jpg" alt="logo">
+  <h1 id="h-title">منصة التخطيط الذكي: مَسَار</h1>
+  <p id="h-sub">"من البصيرة إلى الأثر: نمهد لك المسار لتزرع بذور النجاح في مسيرة كل طالب."</p>
 </div>
 
-<!-- ═══ MAIN ═══ -->
-<div class="container">
+<div class="stp-wrap">
+  <div class="stp">
+    <div class="si active" id="s1"><div class="sc">1</div><div class="sl" id="sl1">البيانات الأساسية</div></div>
+    <div class="si" id="s2"><div class="sc">2</div><div class="sl" id="sl2">رفع المسح</div></div>
+    <div class="si" id="s3"><div class="sc">3</div><div class="sl" id="sl3">البرومت الجاهز</div></div>
+  </div>
+</div>
 
-    <!-- WELCOME -->
-    <div class="card welcome-card" id="welcome-section">
-        <h2>أهلاً بك زميلي/زميلتي في "مَسَار"! 👋</h2>
-        <p>
-            معكِ <strong>منى مصطفى كناعنه</strong>، مركزة التقييم.<br>
-            يسعدني أن أرافقك اليوم. من خلال خطوات بسيطة، ستحصل على <strong>برومت ذكي جاهز للنسخ</strong> تلصقه في أي أداة ذكاء اصطناعي (Claude، ChatGPT، Gemini) لتحصل على خطة تدخل دقيقة تلقائياً.
-        </p>
-        <button class="btn btn-primary" onclick="startWizard()">ابدأ بتصميم المسار ←</button>
+<div class="wrap">
+
+  <div class="card wcard" id="sec-welcome">
+    <h2 id="w-title">أهلاً بك زميلي/زميلتي في "مَسَار"! 👋</h2>
+    <p id="w-body">معكِ <strong>منى مصطفى كناعنه</strong>، مركزة التقييم.<br>من خلال خطوات بسيطة، ستحصل على <strong>برومت ذكي جاهز للنسخ</strong> تلصقه في أي أداة ذكاء اصطناعي للحصول على خطة تدخل دقيقة.</p>
+    <button class="btn btn-p" id="w-btn" onclick="startWiz()">ابدأ بتصميم المسار ←</button>
+  </div>
+
+  <div id="sec-wiz" class="hidden">
+    <div class="card" id="card1">
+      <div class="ctitle"><span>📋</span><span id="s1-title">الخطوة 1 — البيانات الأساسية</span></div>
+      <div class="fgrid">
+        <div class="fg"><span class="lbl" id="lb-teacher">اسم المعلم/ة</span><input type="text" id="f-teacher" placeholder="مثال: أحمد محمد"></div>
+        <div class="fg"><span class="lbl" id="lb-class">اسم الصف</span><input type="text" id="f-class" placeholder="مثال: السابع أ"></div>
+        <div class="fg"><span class="lbl" id="lb-subj">المادة الدراسية</span><input type="text" id="f-subj" placeholder="مثال: علوم"></div>
+        <div class="fg"><span class="lbl" id="lb-hrs">عدد الحصص الأسبوعية</span><input type="number" id="f-hrs" placeholder="4" min="1" max="20"></div>
+      </div>
+      <div style="margin-bottom:1.5rem">
+        <span class="lbl" id="lb-res" style="margin-bottom:10px">الموارد المتاحة (اختر ما يناسب)</span>
+        <div class="chips" id="chips-box"></div>
+      </div>
+      <div class="fe"><button class="btn btn-p" id="btn-next" onclick="goStep2()">التالي ←</button></div>
     </div>
 
-    <!-- WIZARD -->
-    <div id="wizard-section" class="hidden">
-
-        <!-- Step 1: Basic info -->
-        <div class="card" id="step1-card">
-            <div class="card-title"><span>📋</span> الخطوة 1 — البيانات الأساسية</div>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="teacher-name">اسم المعلم/ة</label>
-                    <input type="text" id="teacher-name" placeholder="مثال: أحمد محمد">
-                </div>
-                <div class="form-group">
-                    <label for="class-name">اسم الصف</label>
-                    <input type="text" id="class-name" placeholder="مثال: السابع أ">
-                </div>
-                <div class="form-group">
-                    <label for="subject-name">المادة الدراسية</label>
-                    <input type="text" id="subject-name" placeholder="مثال: اللغة العربية">
-                </div>
-                <div class="form-group">
-                    <label for="weekly-hours">عدد الحصص الأسبوعية</label>
-                    <input type="number" id="weekly-hours" placeholder="مثال: 4" min="1" max="20">
-                </div>
-            </div>
-
-            <div class="form-group" style="margin-bottom:1.5rem">
-                <label style="margin-bottom:10px;display:block;">الموارد المتاحة لدعم الطلاب (اختر ما يناسب)</label>
-                <div class="resources-grid" id="resources-grid">
-                    <div class="resource-chip" data-value="ساعات فردية (פרטני)"><span class="chip-icon">👤</span> ساعات فردية (פרטני)</div>
-                    <div class="resource-chip" data-value="تعليم مصحح (הוראה מתקנת)"><span class="chip-icon">✏️</span> تعليم مصحح (הוראה מתקנת)</div>
-                    <div class="resource-chip" data-value="برامج إثراء גפ״ן"><span class="chip-icon">⭐</span> برامج إثراء / גפ״ן</div>
-                    <div class="resource-chip" data-value="استشارة مدرسية"><span class="chip-icon">💬</span> استشارة مدرسية</div>
-                    <div class="resource-chip" data-value="مجموعات صغيرة داخل الصف"><span class="chip-icon">👥</span> مجموعات صغيرة داخل الصف</div>
-                    <div class="resource-chip" data-value="واجبات تمييزية"><span class="chip-icon">📝</span> واجبات تمييزية</div>
-                </div>
-            </div>
-
-            <div class="flex-end">
-                <button class="btn btn-primary" onclick="goToStep2()">التالي: رفع المسح ←</button>
-            </div>
-        </div>
-
-        <!-- Step 2: Upload -->
-        <div class="card hidden" id="step2-card">
-            <div class="card-title"><span>📂</span> الخطوة 2 — رفع نتائج المسح الصفي</div>
-
-            <div class="tip-banner">
-                💡 <strong>ملاحظة:</strong> ارفع ملف PDF الخاص بنتائج المسح الصفي. ستقوم المنصة بتحليل محتواه وبناء برومت مخصص جاهز للنسخ واللصق في أي أداة ذكاء اصطناعي.
-            </div>
-
-            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-                <input type="file" id="file-input" accept=".pdf" class="hidden">
-                <div id="drop-icon" style="font-size:2.5rem;margin-bottom:.5rem;">📥</div>
-                <p class="main">اسحب وأفلت ملف PDF هنا</p>
-                <p class="sub">أو اضغط لاختيار الملف من جهازك</p>
-            </div>
-            <div class="file-success" id="file-success">
-                <span style="font-size:1.5rem">✅</span>
-                <span id="file-name-text">تم استلام الملف بنجاح</span>
-            </div>
-
-            <div class="flex-end">
-                <button class="btn btn-outline" onclick="goToStep1()">← رجوع</button>
-                <button class="btn btn-green" onclick="buildPrompt()">توليد البرومت الذكي ⚙️</button>
-            </div>
-        </div>
+    <div class="card hidden" id="card2">
+      <div class="ctitle"><span>📂</span><span id="s2-title">الخطوة 2 — رفع نتائج المسح الصفي</span></div>
+      <div class="tip" id="tip-up">💡 ارفع ملف HTML أو PDF نتائج المسح الصفي. ستقرأ المنصة محتواه تلقائياً وتدمجه في البرومت.</div>
+      <div class="dz" id="dz" onclick="document.getElementById('fi').click()">
+        <input type="file" id="fi" accept=".html,.htm,.pdf" class="hidden">
+        <div class="dz-icon" id="dz-ico">📥</div>
+        <p class="dz-main" id="dz-main">اسحب وأفلت ملف المسح هنا</p>
+        <p class="dz-sub" id="dz-sub">يدعم ملفات HTML و PDF — أو اضغط للاختيار</p>
+      </div>
+      <div class="fok" id="f-ok"><span style="font-size:1.5rem">✅</span><span id="f-ok-txt">تم استلام الملف</span></div>
+      <div class="pbox" id="pbox"></div>
+      <div class="fe">
+        <button class="btn btn-o" id="btn-back" onclick="goStep1()">← رجوع</button>
+        <button class="btn btn-g" id="btn-build" onclick="buildPrompt()">توليد البرومت ⚙️</button>
+      </div>
     </div>
+  </div>
 
-    <!-- LOADING -->
-    <div class="card loading-card hidden" id="loading-section">
-        <div class="spinner"></div>
-        <h2>جاري تحليل البيانات وبناء البرومت...</h2>
-        <p>يرجى الانتظار لحظات معدودة ⏳</p>
-        <div class="progress-dots">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-        </div>
+  <div class="card ldc hidden" id="sec-load">
+    <div class="spin"></div>
+    <h2 id="ld-title">جاري تحليل البيانات وبناء البرومت...</h2>
+    <p id="ld-sub">يرجى الانتظار لحظات معدودة ⏳</p>
+    <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+
+  <div id="sec-res" class="hidden">
+    <div class="rh">
+      <div class="rh-ico">🎉</div>
+      <div><h2 id="r-title">تم بناء البرومت بنجاح!</h2><p id="r-sub">انسخ البرومت وارفق ملف المسح معه في أي موقع ذكاء اصطناعي.</p></div>
     </div>
-
-    <!-- RESULTS -->
-    <div id="results-section" class="hidden">
-
-        <div class="result-header">
-            <div class="icon">🎉</div>
-            <div>
-                <h2>تم بناء البرومت بنجاح!</h2>
-                <p>انسخ البرومت أدناه والصقه في أي أداة ذكاء اصطناعي — ثم ارفع ملف الـ PDF معه للحصول على خطة التدخل كاملة.</p>
-            </div>
-        </div>
-
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('prompt-tab', this)">📋 البرومت الجاهز</button>
-            <button class="tab-btn" onclick="switchTab('instructions-tab', this)">📖 طريقة الاستخدام</button>
-            <button class="tab-btn" onclick="switchTab('sites-tab', this)">🌐 المواقع المقترحة</button>
-        </div>
-
-        <!-- Tab: Prompt -->
-        <div class="tab-content active" id="prompt-tab">
-            <div class="card" style="padding:1.5rem">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px;">
-                    <span style="font-size:14px;font-weight:700;color:var(--navy);">البرومت المولَّد (قابل للتعديل)</span>
-                    <button class="btn btn-copy" id="copy-btn" onclick="copyPrompt()">📋 نسخ البرومت</button>
-                </div>
-                <div class="prompt-box-wrap">
-                    <textarea class="prompt-box" id="generated-prompt"></textarea>
-                </div>
-                <div style="display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap;">
-                    <button class="btn btn-outline" style="font-size:13px;padding:8px 16px" onclick="resetAll()">🔄 بناء برومت جديد</button>
-                    <button class="btn btn-green" style="font-size:13px;padding:8px 16px" onclick="printPrompt()">🖨️ طباعة</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab: Instructions -->
-        <div class="tab-content" id="instructions-tab">
-            <div class="card">
-                <div class="instructions">
-                    <h4>📖 كيف تستخدم البرومت خطوة بخطوة</h4>
-                    <div class="step-row">
-                        <div class="step-num">1</div>
-                        <div>اضغط على زر <strong>"نسخ البرومت"</strong> في تبويب "البرومت الجاهز"</div>
-                    </div>
-                    <div class="step-row">
-                        <div class="step-num">2</div>
-                        <div>افتح أي موقع ذكاء اصطناعي (Claude / ChatGPT / Gemini) — انظر تبويب "المواقع المقترحة"</div>
-                    </div>
-                    <div class="step-row">
-                        <div class="step-num">3</div>
-                        <div>الصق البرومت في مربع المحادثة</div>
-                    </div>
-                    <div class="step-row">
-                        <div class="step-num">4</div>
-                        <div><strong>ارفع ملف PDF</strong> المسح الصفي مباشرةً مع البرومت (معظم المواقع تدعم رفع الملفات)</div>
-                    </div>
-                    <div class="step-row">
-                        <div class="step-num">5</div>
-                        <div>اضغط إرسال وانتظر الخطة الكاملة!</div>
-                    </div>
-                </div>
-
-                <div class="tip-banner mt-3" style="background:#E8F5E9;border-color:var(--green-mid);color:var(--green);">
-                    ✅ <strong>نصيحة:</strong> في Claude.ai وChatGPT-4، يمكنك رفع PDF مباشرةً مع البرومت في نفس الرسالة للحصول على أفضل النتائج.
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab: Sites -->
-        <div class="tab-content" id="sites-tab">
-            <div class="card">
-                <p style="font-size:14px;color:var(--text-muted);margin-bottom:1rem;">اختر أحد هذه المواقع، والصق فيه البرومت المنسوخ:</p>
-                <div class="sites-grid">
-                    <a class="site-link" href="https://claude.ai" target="_blank">
-                        <div class="site-icon">🤖</div>
-                        <div>Claude.ai</div>
-                        <div class="site-note">الأفضل للتحليل</div>
-                    </a>
-                    <a class="site-link" href="https://chat.openai.com" target="_blank">
-                        <div class="site-icon">💬</div>
-                        <div>ChatGPT</div>
-                        <div class="site-note">يدعم PDF</div>
-                    </a>
-                    <a class="site-link" href="https://gemini.google.com" target="_blank">
-                        <div class="site-icon">✨</div>
-                        <div>Gemini</div>
-                        <div class="site-note">مجاني ومتاح</div>
-                    </a>
-                    <a class="site-link" href="https://copilot.microsoft.com" target="_blank">
-                        <div class="site-icon">🪟</div>
-                        <div>Copilot</div>
-                        <div class="site-note">مدمج مع Office</div>
-                    </a>
-                </div>
-                <div class="tip-banner mt-2">
-                    💡 <strong>تلميح:</strong> يمكنك أيضاً استخدام نفس البرومت في أي أداة ذكاء اصطناعي أخرى متاحة لك في المدرسة.
-                </div>
-            </div>
-        </div>
-
+    <div class="tabs">
+      <button class="tb on" onclick="switchTab('tc1',this)"><span id="t1-lbl">📋 البرومت الجاهز</span></button>
+      <button class="tb" onclick="switchTab('tc2',this)"><span id="t2-lbl">📖 طريقة الاستخدام</span></button>
+      <button class="tb" onclick="switchTab('tc3',this)"><span id="t3-lbl">🌐 المواقع المقترحة</span></button>
     </div>
-</div><!-- /container -->
+    <div class="tc on" id="tc1">
+      <div class="card" style="padding:1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px">
+          <span style="font-size:14px;font-weight:700;color:var(--navy)" id="pt-lbl">البرومت المولَّد (قابل للتعديل)</span>
+          <button class="btn btn-c" id="cp-btn" onclick="doCopy()">📋 نسخ البرومت</button>
+        </div>
+        <textarea class="pt" id="pt"></textarea>
+        <div style="display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap">
+          <button class="btn btn-o" style="font-size:13px;padding:8px 16px" id="btn-reset" onclick="doReset()">🔄 بناء برومت جديد</button>
+          <button class="btn btn-g" style="font-size:13px;padding:8px 16px" id="btn-print" onclick="doPrint()">🖨️ طباعة</button>
+        </div>
+      </div>
+    </div>
+    <div class="tc" id="tc2">
+      <div class="card">
+        <div class="inst-box">
+          <h4 id="inst-h">📖 كيف تستخدم البرومت خطوة بخطوة</h4>
+          <div class="sr"><div class="sn">1</div><div id="i1">اضغط <strong>"نسخ البرومت"</strong> في التبويب الأول</div></div>
+          <div class="sr"><div class="sn">2</div><div id="i2">افتح أي موقع ذكاء اصطناعي من التبويب الثالث</div></div>
+          <div class="sr"><div class="sn">3</div><div id="i3">الصق البرومت في مربع المحادثة</div></div>
+          <div class="sr"><div class="sn">4</div><div id="i4"><strong>ارفع ملف المسح</strong> (HTML أو PDF) مع البرومت مباشرةً</div></div>
+          <div class="sr"><div class="sn">5</div><div id="i5">اضغط إرسال وانتظر خطة التدخل الكاملة!</div></div>
+        </div>
+        <div class="tip tip-g mt3" id="tip-cl">✅ في Claude.ai وChatGPT يمكنك رفع الملف مع البرومت في نفس الرسالة للحصول على أفضل النتائج.</div>
+      </div>
+    </div>
+    <div class="tc" id="tc3">
+      <div class="card">
+        <p style="font-size:14px;color:var(--muted);margin-bottom:1rem" id="sites-intro">اختر أحد المواقع والصق فيه البرومت:</p>
+        <div class="sgrid">
+          <a class="sl-a" href="https://claude.ai" target="_blank"><div class="sl-ico">🤖</div><div>Claude.ai</div><div class="sl-note" id="sn1">الأفضل للتحليل</div></a>
+          <a class="sl-a" href="https://chat.openai.com" target="_blank"><div class="sl-ico">💬</div><div>ChatGPT</div><div class="sl-note" id="sn2">يدعم الملفات</div></a>
+          <a class="sl-a" href="https://gemini.google.com" target="_blank"><div class="sl-ico">✨</div><div>Gemini</div><div class="sl-note" id="sn3">مجاني ومتاح</div></a>
+          <a class="sl-a" href="https://copilot.microsoft.com" target="_blank"><div class="sl-ico">🪟</div><div>Copilot</div><div class="sl-note" id="sn4">مدمج مع Office</div></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
 
 <script>
-    // ── State ──
-    let uploadedFile = null;
+// ══ CONFIG ══
+const LOGO   = 'https://i.postimg.cc/Sx1tnFck/lwgw-byt-hspr.jpg';
+const FOOTER = { ar:'بإرشاد مركزة التقييم — منى مصطفى كناعنه', he:'בהנחיית רכזת ההערכה — מנא מוסטפא כנענה', en:'Under the guidance of Assessment Coordinator — Mona Mustafa Kanaaneh' };
 
-    // ── Stepper ──
-    function setStep(n) {
-        [1,2,3].forEach(i => {
-            const el = document.getElementById('s'+i);
-            el.classList.remove('active','done');
-            if (i < n) el.classList.add('done');
-            else if (i === n) el.classList.add('active');
-        });
-    }
+// ══ STATE ══
+let curLang = 'ar';
+let survey  = null;
 
-    // ── Welcome → Wizard ──
-    function startWizard() {
-        document.getElementById('welcome-section').classList.add('hidden');
-        document.getElementById('wizard-section').classList.remove('hidden');
-        setStep(1);
-    }
+// ══ TRANSLATIONS ══
+const T = {
+  ar:{dir:'rtl',title:'منصة التخطيط الذكي: مَسَار',hsub:'"من البصيرة إلى الأثر: نمهد لك المسار لتزرع بذور النجاح في مسيرة كل طالب."',sl1:'البيانات الأساسية',sl2:'رفع المسح',sl3:'البرومت الجاهز',wtitle:'أهلاً بك زميلي/زميلتي في "مَسَار"! 👋',wbody:'معكِ <strong>منى مصطفى كناعنه</strong>، مركزة التقييم.<br>من خلال خطوات بسيطة، ستحصل على <strong>برومت ذكي جاهز للنسخ</strong> تلصقه في أي أداة ذكاء اصطناعي.',wbtn:'ابدأ بتصميم المسار ←',s1t:'الخطوة 1 — البيانات الأساسية',s2t:'الخطوة 2 — رفع نتائج المسح الصفي',lbTeacher:'اسم المعلم/ة',lbClass:'اسم الصف',lbSubj:'المادة الدراسية',lbHrs:'عدد الحصص الأسبوعية',lbRes:'الموارد المتاحة (اختر ما يناسب)',chips:['👤 ساعات فردية (פרטני)','✏️ تعليم مصحح (הוראה מתקנת)','⭐ برامج إثراء / גפ"ן','💬 استشارة مدرسية','👥 مجموعات صغيرة داخل الصف','📝 واجبات تمييزية'],cvals:['ساعات فردية (פרטני)','تعليم مصحح (הוראה מתקנת)','برامج إثراء / גפ"ן','استشارة مدرسية','مجموعات صغيرة داخل الصف','واجبات تمييزية'],tipUp:'💡 ارفع ملف HTML أو PDF نتائج المسح الصفي. ستقرأ المنصة محتواه تلقائياً وتدمجه في البرومت.',dzMain:'اسحب وأفلت ملف المسح هنا',dzSub:'يدعم ملفات HTML و PDF — أو اضغط للاختيار',btnNext:'التالي ←',btnBack:'← رجوع',btnBuild:'توليد البرومت ⚙️',ldTitle:'جاري تحليل البيانات وبناء البرومت...',ldSub:'يرجى الانتظار لحظات معدودة ⏳',rTitle:'تم بناء البرومت بنجاح!',rSub:'انسخ البرومت وارفق ملف المسح معه في أي موقع ذكاء اصطناعي.',t1:'📋 البرومت الجاهز',t2:'📖 طريقة الاستخدام',t3:'🌐 المواقع المقترحة',ptLbl:'البرومت المولَّد (قابل للتعديل)',cpBtn:'📋 نسخ البرومت',cpOk:'✅ تم النسخ!',btnReset:'🔄 بناء برومت جديد',btnPrint:'🖨️ طباعة',instH:'📖 كيف تستخدم البرومت خطوة بخطوة',inst:['اضغط <strong>"نسخ البرومت"</strong> في التبويب الأول','افتح أي موقع ذكاء اصطناعي من التبويب الثالث','الصق البرومت في مربع المحادثة','<strong>ارفع ملف المسح</strong> (HTML أو PDF) مع البرومت مباشرةً','اضغط إرسال وانتظر خطة التدخل الكاملة!'],tipCl:'✅ في Claude.ai وChatGPT يمكنك رفع الملف مع البرومت في نفس الرسالة للحصول على أفضل النتائج.',sitesIntro:'اختر أحد المواقع والصق فيه البرومت:',sn:['الأفضل للتحليل','يدعم الملفات','مجاني ومتاح','مدمج مع Office'],alertF:'يرجى تعبئة اسم المعلم/ة واسم الصف على الأقل.',alertFile:'يرجى رفع ملف المسح الصفي أولاً.',alertFmt:'الرجاء رفع ملف HTML أو PDF فقط!',fileOk:'تم استلام الملف بنجاح: ',prevTitle:'📊 ملخص ما تم استخراجه من الملف:',confirmReset:'هل تريد إعادة البداية وبناء برومت جديد؟'},
+  he:{dir:'rtl',title:'פלטפורמת תכנון חכם: מסלול',hsub:'"מתובנה להשפעה: סוללים את הדרך שלך לזרוע זרעי הצלחה במסע של כל תלמיד."',sl1:'נתונים בסיסיים',sl2:'העלאת סקר',sl3:'פרומפט מוכן',wtitle:'ברוך הבא/ה למסלול! 👋',wbody:'כאן <strong>מנא מוסטפא כנענה</strong>, רכזת הערכה.<br>בכמה צעדים פשוטים תקבל/י <strong>פרומפט חכם מוכן להעתקה</strong> לכל כלי AI לקבלת תוכנית התערבות מדויקת.',wbtn:'התחל/י לתכנן ←',s1t:'שלב 1 — נתונים בסיסיים',s2t:'שלב 2 — העלאת תוצאות הסקר הכיתתי',lbTeacher:'שם המורה',lbClass:'שם הכיתה',lbSubj:'מקצוע',lbHrs:"מס' שיעורים שבועיים",lbRes:'משאבים זמינים (בחר/י)',chips:['👤 שעות פרטניות','✏️ הוראה מתקנת','⭐ גפ"ן / העשרה','💬 ייעוץ בית-ספרי','👥 קבוצות קטנות בכיתה','📝 מטלות מובחנות'],cvals:['שעות פרטניות','הוראה מתקנת','גפ"ן / העשרה','ייעוץ בית-ספרי','קבוצות קטנות בכיתה','מטלות מובחנות'],tipUp:'💡 העלה/י קובץ HTML או PDF של תוצאות הסקר הכיתתי.',dzMain:'גרור/י ושחרר/י את קובץ הסקר כאן',dzSub:'תומך HTML ו-PDF — או לחץ/י לבחירה',btnNext:'הבא ←',btnBack:'← חזרה',btnBuild:'צור/י פרומפט ⚙️',ldTitle:'מנתח/ת נתונים ובונה פרומפט...',ldSub:'נא להמתין מספר רגעים ⏳',rTitle:'הפרומפט נוצר בהצלחה!',rSub:'העתק/י את הפרומפט, צרף/י את קובץ הסקר לאתר AI כלשהו.',t1:'📋 פרומפט מוכן',t2:'📖 הוראות שימוש',t3:'🌐 אתרים מומלצים',ptLbl:'הפרומפט שנוצר (ניתן לעריכה)',cpBtn:'📋 העתק פרומפט',cpOk:'✅ הועתק!',btnReset:'🔄 בנה פרומפט חדש',btnPrint:'🖨️ הדפס',instH:'📖 איך משתמשים בפרומפט — שלב אחר שלב',inst:['לחץ/י <strong>"העתק פרומפט"</strong> בלשונית הראשונה','פתח/י אתר AI מהלשונית השלישית','הדבק/י את הפרומפט בתיבת השיחה','<strong>צרף/י את קובץ הסקר</strong> (HTML או PDF) ביחד עם הפרומפט','לחץ/י שלח וקבל/י תוכנית התערבות מלאה!'],tipCl:'✅ ב-Claude.ai וב-ChatGPT ניתן לצרף את הקובץ ביחד עם הפרומפט באותה הודעה.',sitesIntro:'בחר/י אתר והדבק/י את הפרומפט:',sn:['הטוב ביותר לניתוח','תומך קבצים','חינמי וזמין','משולב עם Office'],alertF:'נא למלא שם מורה ושם כיתה לפחות.',alertFile:'נא להעלות קובץ הסקר תחילה.',alertFmt:'נא להעלות קובץ HTML או PDF בלבד!',fileOk:'הקובץ התקבל בהצלחה: ',prevTitle:'📊 סיכום מה שחולץ מהקובץ:',confirmReset:'האם לאפס ולבנות פרומפט חדש?'},
+  en:{dir:'ltr',title:'Smart Planning Platform: MASSAR',hsub:'"From insight to impact: paving the path to plant seeds of success in every student\'s journey."',sl1:'Basic Info',sl2:'Upload Survey',sl3:'Ready Prompt',wtitle:'Welcome to MASSAR! 👋',wbody:'Here with you is <strong>Mona Mustafa Kanaaneh</strong>, Assessment Coordinator.<br>In a few steps, you\'ll receive a <strong>smart prompt ready to copy</strong> and paste into any AI tool.',wbtn:'Start Planning →',s1t:'Step 1 — Basic Information',s2t:'Step 2 — Upload Class Survey Results',lbTeacher:'Teacher Name',lbClass:'Class Name',lbSubj:'Subject',lbHrs:'Weekly Lessons',lbRes:'Available Resources (select all that apply)',chips:['👤 Individual Hours (פרטני)','✏️ Remedial Teaching (הוראה מתקנת)','⭐ Enrichment / גפ"ן','💬 School Counseling','👥 Small Groups In Class','📝 Differentiated Assignments'],cvals:['Individual Hours','Remedial Teaching','Enrichment Programs','School Counseling','Small Groups','Differentiated Assignments'],tipUp:'💡 Upload the class survey HTML or PDF file. The platform will read its content automatically.',dzMain:'Drag & drop the survey file here',dzSub:'Supports HTML & PDF — or click to choose',btnNext:'Next →',btnBack:'← Back',btnBuild:'Generate Prompt ⚙️',ldTitle:'Analyzing data and building prompt...',ldSub:'Please wait a moment ⏳',rTitle:'Prompt built successfully!',rSub:'Copy the prompt and attach the survey file to any AI platform.',t1:'📋 Ready Prompt',t2:'📖 How to Use',t3:'🌐 Suggested Sites',ptLbl:'Generated Prompt (editable)',cpBtn:'📋 Copy Prompt',cpOk:'✅ Copied!',btnReset:'🔄 Build New Prompt',btnPrint:'🖨️ Print',instH:'📖 How to Use the Prompt — Step by Step',inst:['Click <strong>"Copy Prompt"</strong> in the first tab','Open any AI website from the third tab','Paste the prompt into the chat box','<strong>Attach the survey file</strong> (HTML or PDF) along with the prompt','Hit send and receive the complete intervention plan!'],tipCl:'✅ On Claude.ai and ChatGPT, you can attach the file together with the prompt in the same message.',sitesIntro:'Choose a site and paste the prompt:',sn:['Best for analysis','Supports files','Free & available','Integrated with Office'],alertF:'Please fill in at least the teacher name and class name.',alertFile:'Please upload the survey file first.',alertFmt:'Please upload an HTML or PDF file only!',fileOk:'File received: ',prevTitle:'📊 Summary of extracted data:',confirmReset:'Reset and build a new prompt?'}
+};
 
-    // ── Resource chips (multi-select) ──
-    document.getElementById('resources-grid').addEventListener('click', function(e) {
-        const chip = e.target.closest('.resource-chip');
-        if (chip) chip.classList.toggle('selected');
+// ══ HELPERS ══
+function $id(id){ return document.getElementById(id); }
+function setText(id,v){ const e=$id(id); if(e) e.textContent=v; }
+function setHTML(id,v){ const e=$id(id); if(e) e.innerHTML=v; }
+
+// ══ LANGUAGE ══
+function setLang(l, btn) {
+  curLang = l;
+  const t = T[l];
+  $id('html-root').setAttribute('lang', l);
+  $id('html-root').setAttribute('dir', t.dir);
+  document.body.className = t.dir==='ltr' ? 'ltr' : '';
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  setText('h-title',t.title); setText('h-sub',t.hsub);
+  setText('sl1',t.sl1); setText('sl2',t.sl2); setText('sl3',t.sl3);
+  setText('w-title',t.wtitle); setHTML('w-body',t.wbody); setText('w-btn',t.wbtn);
+  setText('s1-title',t.s1t); setText('s2-title',t.s2t);
+  setText('lb-teacher',t.lbTeacher); setText('lb-class',t.lbClass);
+  setText('lb-subj',t.lbSubj); setText('lb-hrs',t.lbHrs); setText('lb-res',t.lbRes);
+  setText('tip-up',t.tipUp); setText('dz-main',t.dzMain); setText('dz-sub',t.dzSub);
+  setText('btn-next',t.btnNext); setText('btn-back',t.btnBack); setText('btn-build',t.btnBuild);
+  setText('ld-title',t.ldTitle); setText('ld-sub',t.ldSub);
+  setText('r-title',t.rTitle); setText('r-sub',t.rSub);
+  setText('t1-lbl',t.t1); setText('t2-lbl',t.t2); setText('t3-lbl',t.t3);
+  setText('pt-lbl',t.ptLbl); setText('cp-btn',t.cpBtn);
+  setText('btn-reset',t.btnReset); setText('btn-print',t.btnPrint);
+  setText('inst-h',t.instH);
+  for(let i=1;i<=5;i++) setHTML('i'+i, t.inst[i-1]);
+  setText('tip-cl',t.tipCl); setText('sites-intro',t.sitesIntro);
+  for(let i=1;i<=4;i++) setText('sn'+i, t.sn[i-1]);
+  renderChips();
+}
+
+function renderChips() {
+  const t = T[curLang];
+  const box = $id('chips-box');
+  const prev = [...box.querySelectorAll('.chip.on')].map(c=>c.dataset.idx);
+  box.innerHTML = '';
+  t.chips.forEach((lbl,i)=>{
+    const d = document.createElement('div');
+    d.className = 'chip'+(prev.includes(String(i))?' on':'');
+    d.dataset.idx = i;
+    d.dataset.val = t.cvals[i];
+    d.textContent = lbl;
+    box.appendChild(d);
+  });
+}
+$id('chips-box').addEventListener('click', e=>{ const c=e.target.closest('.chip'); if(c) c.classList.toggle('on'); });
+
+// ══ STEPPER ══
+function setStep(n){
+  [1,2,3].forEach(i=>{
+    const el=$id('s'+i);
+    el.classList.remove('active','done');
+    if(i<n) el.classList.add('done');
+    else if(i===n) el.classList.add('active');
+  });
+}
+
+// ══ WIZARD ══
+function startWiz(){ $id('sec-welcome').classList.add('hidden'); $id('sec-wiz').classList.remove('hidden'); setStep(1); }
+function goStep2(){
+  if(!$id('f-teacher').value.trim()||!$id('f-class').value.trim()){ alert(T[curLang].alertF); return; }
+  $id('card1').classList.add('hidden'); $id('card2').classList.remove('hidden');
+  setStep(2); window.scrollTo({top:0,behavior:'smooth'});
+}
+function goStep1(){ $id('card2').classList.add('hidden'); $id('card1').classList.remove('hidden'); setStep(1); }
+
+// ══ FILE ══
+const fi = $id('fi');
+['dragenter','dragover','dragleave','drop'].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();}));
+document.addEventListener('dragenter',()=>{ const dz=$id('dz'); if(dz)dz.classList.add('over'); });
+document.addEventListener('dragleave',e=>{ if(!e.relatedTarget){const dz=$id('dz');if(dz)dz.classList.remove('over');} });
+document.addEventListener('drop',e=>{ const dz=$id('dz'); if(dz)dz.classList.remove('over'); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+fi.addEventListener('change',function(){ if(this.files[0]) handleFile(this.files[0]); });
+
+function handleFile(file) {
+  const name = file.name.toLowerCase();
+  if(!name.endsWith('.html')&&!name.endsWith('.htm')&&!name.endsWith('.pdf')){ alert(T[curLang].alertFmt); return; }
+  $id('dz-ico').textContent='📄';
+  $id('f-ok').classList.add('show');
+  $id('f-ok-txt').textContent = T[curLang].fileOk + file.name;
+  if(name.endsWith('.html')||name.endsWith('.htm')){
+    const reader = new FileReader();
+    reader.onload = e => { survey = parseHTML(e.target.result); showPreview(); };
+    reader.readAsText(file,'UTF-8');
+  } else {
+    survey = {isPdf:true,students:[],skills:[],stats:{},meta:{}};
+    showPreview();
+  }
+}
+
+function parseHTML(html) {
+  const doc = new DOMParser().parseFromString(html,'text/html');
+  const meta={}, stats={}, students=[], skills=[];
+  doc.querySelectorAll('.pr-meta span').forEach(s=>{ const b=s.querySelector('b'); if(b){ const k=s.textContent.split(':')[0].trim(); meta[k]=b.textContent.trim(); } });
+  doc.querySelectorAll('.pr-stat').forEach(s=>{ const l=s.querySelector('.lbl')?.textContent.trim(), v=s.querySelector('.val')?.textContent.trim(); if(l&&v) stats[l]=v; });
+  const tbl=doc.querySelector('.pr-tbl');
+  if(tbl){
+    const hdrs=[...tbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
+    tbl.querySelectorAll('tbody tr').forEach(tr=>{
+      const cells=[...tr.querySelectorAll('td')].map(td=>td.textContent.trim());
+      if(cells.length<2) return;
+      const obj={_name:cells[0],_total:'',_pct:'',_grade:''};
+      hdrs.forEach((h,i)=>{ obj[h]=cells[i]||''; });
+      obj._total = obj['المجموع']||obj['סה"כ']||obj['Total']||cells[cells.length-3]||'';
+      obj._pct   = obj['%']||cells[cells.length-2]||'';
+      obj._grade = obj['التقييم']||obj['ציון']||obj['Grade']||cells[cells.length-1]||'';
+      students.push(obj);
     });
+  }
+  doc.querySelectorAll('.pr-sk').forEach(sk=>{ const n=sk.querySelector('.pr-sk-n')?.textContent.trim(), p=sk.querySelector('.pr-sk-p')?.textContent.trim(); if(n&&p) skills.push({name:n,pct:p}); });
+  return {students,skills,stats,meta,isPdf:false};
+}
 
-    // ── Step 1 → Step 2 ──
-    function goToStep2() {
-        const teacher = document.getElementById('teacher-name').value.trim();
-        const cls = document.getElementById('class-name').value.trim();
-        if (!teacher || !cls) {
-            alert('يرجى تعبئة اسم المعلم/ة واسم الصف على الأقل.');
-            return;
-        }
-        document.getElementById('step1-card').classList.add('hidden');
-        document.getElementById('step2-card').classList.remove('hidden');
-        setStep(2);
-        window.scrollTo({top: 0, behavior: 'smooth'});
+function pctColor(p){ const n=parseFloat(p); if(isNaN(n)) return '#333'; if(n>=81) return '#1a8f63'; if(n>=61) return '#1a6fa5'; if(n>=41) return '#b8960a'; return '#c04030'; }
+
+function showPreview() {
+  const box=$id('pbox'), t=T[curLang];
+  if(!survey||survey.isPdf){
+    box.innerHTML=`<h4>${t.prevTitle}</h4><p style="color:var(--muted);font-size:12px">📎 ملف PDF — سيتم إرفاقه مع البرومت مباشرةً.</p>`;
+    box.classList.add('show'); return;
+  }
+  let h=`<h4>${t.prevTitle}</h4>`;
+  if(Object.keys(survey.meta).length){ h+='<p style="margin-bottom:6px">'; Object.entries(survey.meta).forEach(([k,v])=>{ h+=`<strong>${k}:</strong> ${v} &nbsp;`; }); h+='</p>'; }
+  if(Object.keys(survey.stats).length){ h+='<p style="margin-bottom:8px">'; Object.entries(survey.stats).forEach(([k,v])=>{ h+=`<span style="background:#E3F2FD;padding:2px 8px;border-radius:4px;margin-left:6px;font-size:11px"><b>${k}:</b> ${v}</span>`; }); h+='</p>'; }
+  if(survey.students.length){
+    h+=`<table><tr><th>الاسم / שם</th><th>المجموع</th><th>%</th><th>التقييم</th></tr>`;
+    survey.students.slice(0,30).forEach(s=>{ h+=`<tr><td>${s._name}</td><td>${s._total}</td><td style="color:${pctColor(s._pct)};font-weight:700">${s._pct}</td><td>${s._grade}</td></tr>`; });
+    if(survey.students.length>30) h+=`<tr><td colspan="4" style="text-align:center;color:var(--muted)">... و ${survey.students.length-30} آخرين</td></tr>`;
+    h+='</table>';
+  }
+  if(survey.skills.length) h+=`<p style="margin-top:8px;font-weight:700;font-size:12px;color:var(--navy)">عدد المهارات المقيَّمة: ${survey.skills.length}</p>`;
+  box.innerHTML=h; box.classList.add('show');
+}
+
+// ══ BUILD PROMPT ══
+function buildPrompt() {
+  if(!survey){ alert(T[curLang].alertFile); return; }
+  const teacher=$id('f-teacher').value.trim(), cls=$id('f-class').value.trim(),
+        subj=$id('f-subj').value.trim()||'—', hrs=$id('f-hrs').value||'—',
+        res=[...$id('chips-box').querySelectorAll('.chip.on')].map(c=>c.dataset.val);
+  $id('sec-wiz').classList.add('hidden');
+  $id('sec-load').classList.remove('hidden');
+  setStep(3);
+  setTimeout(()=>{
+    $id('sec-load').classList.add('hidden');
+    $id('sec-res').classList.remove('hidden');
+    $id('pt').value = genPrompt(teacher,cls,subj,hrs,res);
+    window.scrollTo({top:0,behavior:'smooth'});
+  },1800);
+}
+
+function genPrompt(teacher,cls,subj,hrs,res) {
+  const l=curLang, footer=FOOTER[l];
+  const resText = res.length ? res.map((r,i)=>`   ${i+1}. ${r}`).join('\n') : (l==='he'?'   (לא נבחרו)':l==='en'?'   (none)':'   (لم تُحدَّد موارد)');
+
+  let dataSection='';
+  if(survey&&!survey.isPdf&&survey.students.length){
+    const statsLines = Object.entries(survey.stats).map(([k,v])=>`   • ${k}: ${v}`).join('\n');
+    let tbl='';
+    if(l==='ar'){
+      tbl=`\n\n📋 جدول نتائج الطلاب:\n| الاسم | المجموع | % | التقييم |\n|------|---------|---|----------|\n`;
+      survey.students.forEach(s=>{ tbl+=`| ${s._name} | ${s._total} | ${s._pct} | ${s._grade} |\n`; });
+    } else if(l==='he'){
+      tbl=`\n\n📋 טבלת תוצאות:\n| שם | סה"כ | % | ציון |\n|---|---|---|---|\n`;
+      survey.students.forEach(s=>{ tbl+=`| ${s._name} | ${s._total} | ${s._pct} | ${s._grade} |\n`; });
+    } else {
+      tbl=`\n\n📋 Student Results:\n| Name | Total | % | Grade |\n|---|---|---|---|\n`;
+      survey.students.forEach(s=>{ tbl+=`| ${s._name} | ${s._total} | ${s._pct} | ${s._grade} |\n`; });
     }
-
-    // ── Step 2 → Step 1 ──
-    function goToStep1() {
-        document.getElementById('step2-card').classList.add('hidden');
-        document.getElementById('step1-card').classList.remove('hidden');
-        setStep(1);
+    let skills='';
+    if(survey.skills.length){
+      skills = (l==='ar'?'\n\n🎯 المهارات المقيَّمة:\n':l==='he'?'\n\n🎯 מיומנויות שנבדקו:\n':'\n\n🎯 Assessed Skills:\n');
+      survey.skills.forEach(sk=>{ skills+=`   • ${sk.name}: ${sk.pct}\n`; });
     }
+    dataSection = (statsLines?'\n📊 '+(l==='ar'?'إحصائيات عامة':l==='he'?'סטטיסטיקות':'Statistics')+':\n'+statsLines:'')+tbl+skills;
+  } else if(survey&&survey.isPdf){
+    dataSection = l==='ar'?'\n\n[ملف PDF المسح مرفق مع هذه الرسالة — قم بتحليله مباشرةً]':l==='he'?'\n\n[קובץ ה-PDF מצורף — נתח אותו ישירות]':'\n\n[PDF file attached — analyze it directly]';
+  }
 
-    // ── File handling ──
-    const fileInput = document.getElementById('file-input');
+  if(l==='ar') return `أنت خبير تربوي متخصص في التقييم وخطط التدخل الفردية.
 
-    // Prevent browser default for drag events everywhere
-    ['dragenter','dragover','dragleave','drop'].forEach(evName => {
-        document.addEventListener(evName, e => { e.preventDefault(); e.stopPropagation(); });
-    });
-
-    // Highlight drop zone on drag
-    document.addEventListener('dragenter', e => {
-        const dz = document.getElementById('drop-zone');
-        if (dz) dz.classList.add('dragover');
-    });
-    document.addEventListener('dragleave', e => {
-        // Only remove highlight when leaving the window entirely
-        if (e.relatedTarget === null) {
-            const dz = document.getElementById('drop-zone');
-            if (dz) dz.classList.remove('dragover');
-        }
-    });
-    document.addEventListener('drop', e => {
-        const dz = document.getElementById('drop-zone');
-        if (dz) dz.classList.remove('dragover');
-        handleFiles(e.dataTransfer.files);
-    });
-
-    fileInput.addEventListener('change', function() { handleFiles(this.files); });
-
-    function handleFiles(files) {
-        if (!files.length) return;
-        const file = files[0];
-        if (file.type !== 'application/pdf' && !file.name.endsWith('.pdf')) {
-            alert('الرجاء رفع ملف بصيغة PDF فقط!');
-            return;
-        }
-        uploadedFile = file;
-        document.getElementById('drop-icon').textContent = '📄';
-        document.getElementById('file-success').classList.add('show');
-        document.getElementById('file-name-text').textContent = '✅ ' + file.name;
-    }
-
-    // ── Build Prompt ──
-    function buildPrompt() {
-        if (!uploadedFile) {
-            alert('يرجى رفع ملف PDF أولاً.');
-            return;
-        }
-
-        const teacher = document.getElementById('teacher-name').value.trim();
-        const cls = document.getElementById('class-name').value.trim();
-        const subject = document.getElementById('subject-name').value.trim() || 'غير محدد';
-        const hours = document.getElementById('weekly-hours').value || 'غير محدد';
-        const resources = [...document.querySelectorAll('.resource-chip.selected')]
-            .map(el => el.getAttribute('data-value'));
-
-        // Show loading
-        document.getElementById('wizard-section').classList.add('hidden');
-        document.getElementById('loading-section').classList.remove('hidden');
-        setStep(3);
-
-        setTimeout(() => {
-            document.getElementById('loading-section').classList.add('hidden');
-            document.getElementById('results-section').classList.remove('hidden');
-
-            const resourcesText = resources.length
-                ? resources.map((r, i) => `   ${i+1}. ${r}`).join('\n')
-                : '   (لم تُحدَّد موارد)';
-
-            const prompt = `أنت خبير تربوي متخصص في التقييم وخطط التدخل الفردية. مهمتك تحليل نتائج المسح الصفي وبناء خطة تدخل عملية لكل طالب.
-
-═══════════════════════════════
+══════════════════════════════════
 معلومات الصف
-═══════════════════════════════
+══════════════════════════════════
 • المعلم/ة: ${teacher}
 • الصف: ${cls}
-• المادة: ${subject}
-• عدد الحصص الأسبوعية: ${hours}
+• المادة: ${subj}
+• عدد الحصص الأسبوعية: ${hrs}
 
-═══════════════════════════════
+══════════════════════════════════
 الموارد المتاحة في المدرسة
-═══════════════════════════════
-${resourcesText}
+══════════════════════════════════
+${resText}
 
-═══════════════════════════════
+══════════════════════════════════
+بيانات المسح الصفي
+══════════════════════════════════${dataSection}
+
+══════════════════════════════════
 المهمة المطلوبة
-═══════════════════════════════
-قم بتحليل ملف PDF المرفق (نتائج المسح الصفي) وأخرج لي:
+══════════════════════════════════
+بناءً على البيانات أعلاه، أنتج وثيقة خطة تدخل احترافية تتضمن:
 
-1. جدول موجز بأسماء الطلاب ومستوى كل منهم (ممتاز / جيد / يحتاج دعم / يحتاج تدخل عاجل)
+📌 تنسيق الوثيقة (مهم جداً):
+• في رأس الصفحة الأولى: لوجو المدرسة من هذا الرابط: ${LOGO}
+• اسم المعلم/ة، الصف، المادة، التاريخ
+• في أسفل يسار كل صفحة بخط صغير: "${footer}"
 
-2. لكل طالب يحتاج دعمًا أو تدخلاً، اكتب:
-   أ) نقاط الضعف المحددة المستخلصة من النتائج
-   ب) نقاط القوة التي يمكن البناء عليها
-   ج) خطة التدخل المقترحة مع توظيف الموارد المتاحة المذكورة أعلاه
-   د) الأهداف القصيرة المدى (4 أسابيع)
-   ه) أسلوب التقييم المقترح لقياس التقدم
+📊 القسم الأول — ملخص الصف:
+• جدول بمستويات جميع الطلاب: ممتاز (81-100%) | جيد (61-80%) | يحتاج دعم (41-60%) | يحتاج تدخل عاجل (0-40%)
+• إحصائيات مختصرة وتوزيع الفئات
 
-3. خطة توزيع الموارد الأسبوعية: من يحصل على أي دعم ومتى
+📋 القسم الثاني — خطط التدخل الفردية:
+لكل طالب نسبته أقل من 80%:
+  أ) نقاط الضعف المحددة من نتائج المسح
+  ب) نقاط القوة للبناء عليها
+  ج) خطة التدخل المقترحة مع توظيف الموارد المذكورة أعلاه
+  د) الأهداف قصيرة المدى (4 أسابيع)
+  ه) أسلوب قياس التقدم
 
-4. توصيات للمعلم داخل الصف (استراتيجيات تمييز للتعليم)
+📅 القسم الثالث — جدول توزيع الموارد الأسبوعي:
+جدول واضح: من يحصل على أي دعم ومتى
 
-═══════════════════════════════
+💡 القسم الرابع — توصيات داخل الصف:
+استراتيجيات تمييزية عملية تناسب مستويات الطلاب المختلفة
+
+══════════════════════════════════
 تعليمات الأسلوب
-═══════════════════════════════
+══════════════════════════════════
 • اكتب باللغة العربية الفصحى البسيطة
 • كن محدداً وعملياً — تجنب الإجابات العامة
-• استند دائماً إلى البيانات الموجودة في الملف المرفق
-• رتّب الطلاب من الأكثر إلحاحاً للأقل إلحاحاً
+• استند دائماً إلى بيانات الطلاب الواردة أعلاه
+• رتّب الطلاب من الأكثر إلحاحاً للأقل إلحاحاً`;
 
-ملف المسح الصفي مرفق مع هذه الرسالة. ابدأ التحليل الآن.`;
+  if(l==='he') return `אתה מומחה חינוכי המתמחה בהערכה ותוכניות התערבות אישיות.
 
-            document.getElementById('generated-prompt').value = prompt;
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }, 2500);
-    }
+══════════════════════════════════
+פרטי הכיתה
+══════════════════════════════════
+• מורה: ${teacher}
+• כיתה: ${cls}
+• מקצוע: ${subj}
+• שיעורים שבועיים: ${hrs}
 
-    // ── Copy ──
-    function copyPrompt() {
-        const ta = document.getElementById('generated-prompt');
-        ta.select();
-        document.execCommand('copy');
-        const btn = document.getElementById('copy-btn');
-        btn.textContent = '✅ تم النسخ!';
-        btn.classList.add('copied');
-        setTimeout(() => {
-            btn.textContent = '📋 نسخ البرومت';
-            btn.classList.remove('copied');
-        }, 2500);
-    }
+══════════════════════════════════
+משאבים זמינים בבית הספר
+══════════════════════════════════
+${resText}
 
-    // ── Print ──
-    function printPrompt() {
-        const content = document.getElementById('generated-prompt').value;
-        const w = window.open('', '_blank');
-        w.document.write(`<html dir="rtl"><head><meta charset="UTF-8">
-            <style>body{font-family:Arial,sans-serif;padding:2cm;direction:rtl;font-size:13px;line-height:1.8;white-space:pre-wrap;}</style>
-            </head><body>${content.replace(/</g,'&lt;')}</body></html>`);
-        w.document.close();
-        w.print();
-    }
+══════════════════════════════════
+נתוני הסקר הכיתתי
+══════════════════════════════════${dataSection}
 
-    // ── Switch Tab ──
-    function switchTab(tabId, btn) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        btn.classList.add('active');
-    }
+══════════════════════════════════
+המשימה הנדרשת
+══════════════════════════════════
+על סמך הנתונים לעיל, צור מסמך תוכנית התערבות מקצועי הכולל:
 
-    // ── Reset ──
-    function resetAll() {
-        if (!confirm('هل تريد إعادة البداية وبناء برومت جديد؟')) return;
-        document.getElementById('results-section').classList.add('hidden');
-        document.getElementById('wizard-section').classList.remove('hidden');
-        document.getElementById('step2-card').classList.add('hidden');
-        document.getElementById('step1-card').classList.remove('hidden');
-        document.querySelectorAll('.resource-chip.selected').forEach(c => c.classList.remove('selected'));
-        document.getElementById('file-success').classList.remove('show');
-        document.getElementById('drop-icon').textContent = '📥';
-        uploadedFile = null;
-        fileInput.value = '';
-        setStep(1);
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
+📌 עיצוב המסמך (חשוב מאוד):
+• בכותרת עמוד ראשון — לוגו בית הספר: ${LOGO}
+• שם המורה, כיתה, מקצוע, תאריך
+• בתחתית שמאל של כל עמוד בגופן קטן: "${footer}"
+
+📊 חלק א — סיכום כיתתי:
+• טבלת רמות: מצוין (81-100%) | טוב (61-80%) | זקוק לתמיכה (41-60%) | התערבות דחופה (0-40%)
+
+📋 חלק ב — תוכניות התערבות אישיות לכל תלמיד מתחת ל-80%:
+  א) חולשות ספציפיות  ב) חוזקות  ג) תוכנית + משאבים  ד) יעדים ל-4 שבועות  ה) מדידת התקדמות
+
+📅 חלק ג — לוח חלוקת משאבים שבועי
+
+💡 חלק ד — המלצות לתוך הכיתה: אסטרטגיות בידול מעשיות`;
+
+  return `You are an educational expert specializing in assessment and individual intervention plans.
+
+══════════════════════════════════
+Class Information
+══════════════════════════════════
+• Teacher: ${teacher}  • Class: ${cls}  • Subject: ${subj}  • Weekly Lessons: ${hrs}
+
+══════════════════════════════════
+Available Resources
+══════════════════════════════════
+${resText}
+
+══════════════════════════════════
+Survey Data
+══════════════════════════════════${dataSection}
+
+══════════════════════════════════
+Required Task
+══════════════════════════════════
+Based on the data above, produce a professional intervention plan document:
+
+📌 Document Formatting (very important):
+• Page 1 header — school logo: ${LOGO}
+• Teacher, class, subject, date
+• Bottom-left of every page (small font): "${footer}"
+
+📊 Section 1 — Class Summary Table (Excellent/Good/Needs Support/Urgent)
+📋 Section 2 — Individual Intervention Plans for students below 80%
+📅 Section 3 — Weekly Resource Distribution Table
+💡 Section 4 — In-Class Differentiation Strategies`;
+}
+
+// ══ ACTIONS ══
+function switchTab(id,btn){
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  $id(id).classList.add('on'); btn.classList.add('on');
+}
+function doCopy(){
+  $id('pt').select(); document.execCommand('copy');
+  const btn=$id('cp-btn');
+  btn.textContent=T[curLang].cpOk; btn.classList.add('ok');
+  setTimeout(()=>{ btn.textContent=T[curLang].cpBtn; btn.classList.remove('ok'); },2500);
+}
+function doPrint(){
+  const c=$id('pt').value, d=T[curLang].dir;
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html dir="${d}"><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;padding:2cm;direction:${d};font-size:13px;line-height:1.8;white-space:pre-wrap;}</style></head><body>${c.replace(/</g,'&lt;')}</body></html>`);
+  w.document.close(); w.print();
+}
+function doReset(){
+  if(!confirm(T[curLang].confirmReset)) return;
+  survey=null;
+  $id('sec-res').classList.add('hidden');
+  $id('sec-wiz').classList.remove('hidden');
+  $id('card2').classList.add('hidden');
+  $id('card1').classList.remove('hidden');
+  $id('f-ok').classList.remove('show');
+  $id('pbox').classList.remove('show');
+  $id('dz-ico').textContent='📥';
+  $id('fi').value='';
+  $id('chips-box').querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
+  setStep(1); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══ INIT ══
+renderChips();
 </script>
 </body>
 </html>
