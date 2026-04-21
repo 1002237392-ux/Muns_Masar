@@ -4,218 +4,826 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة التخطيط الذكي: مَسَار</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --navy: #1A237E;
+            --navy-light: #283593;
+            --green: #1B5E20;
+            --green-mid: #2E7D32;
+            --green-light: #E8F5E9;
+            --pink-bg: #FCE4EC;
+            --blue-bg: #E3F2FD;
+            --accent: #D32F2F;
+            --gold: #F9A825;
+            --surface: #FFFFFF;
+            --bg: #F0F4FF;
+            --text: #1a1a2e;
+            --text-muted: #5c6080;
+            --border: #dde3f0;
+            --radius: 16px;
+            --radius-sm: 8px;
+            --shadow: 0 4px 24px rgba(26,35,126,0.10);
+            --shadow-lg: 0 8px 40px rgba(26,35,126,0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             font-family: 'Tajawal', sans-serif;
-            background-color: #E8F5E9;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 4rem;
         }
-        .hidden-step { display: none; }
+
+        /* ── Header ── */
+        .header {
+            background: linear-gradient(135deg, var(--navy) 0%, #3949AB 100%);
+            padding: 2rem 1rem 3.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .header img { height: 80px; margin-bottom: 1rem; position: relative; z-index: 1; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+        .header h1 { font-size: 2.4rem; font-weight: 800; color: #fff; margin-bottom: .5rem; position: relative; z-index: 1; letter-spacing: -0.5px; }
+        .header p { font-size: 1rem; color: rgba(255,255,255,0.78); font-style: italic; position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+
+        /* ── Stepper ── */
+        .stepper-wrap {
+            max-width: 700px;
+            margin: -1.5rem auto 0;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 10;
+        }
+        .stepper {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+        }
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            position: relative;
+        }
+        .step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--border);
+            z-index: 0;
+        }
+        .step-item.done:not(:last-child)::after { background: var(--green-mid); }
+        .step-circle {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+            position: relative; z-index: 1;
+            transition: all .3s;
+        }
+        .step-item.active .step-circle { background: var(--navy); color: #fff; box-shadow: 0 0 0 4px rgba(26,35,126,0.15); }
+        .step-item.done .step-circle { background: var(--green-mid); color: #fff; }
+        .step-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-align: center; }
+        .step-item.active .step-label { color: var(--navy); font-weight: 700; }
+        .step-item.done .step-label { color: var(--green-mid); }
+
+        /* ── Main container ── */
+        .container { max-width: 780px; margin: 2rem auto; padding: 0 1rem; }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+            padding-bottom: .75rem;
+            border-bottom: 2px solid var(--green-light);
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        .card-title span { font-size: 1.4rem; }
+
+        /* ── Welcome ── */
+        .welcome-card {
+            background: linear-gradient(135deg, var(--pink-bg), #fff 60%);
+            border: 1px solid #f8bbd0;
+            text-align: center;
+        }
+        .welcome-card h2 { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
+        .welcome-card p { color: var(--text-muted); line-height: 1.9; font-size: 1rem; margin-bottom: 1.5rem; }
+        .welcome-card strong { color: var(--navy); }
+
+        /* ── Form ── */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full { grid-column: 1 / -1; }
+        label { font-size: 13px; font-weight: 700; color: var(--text); }
+        input[type=text], input[type=number] {
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            color: var(--text);
+            background: #fafbff;
+            outline: none;
+            transition: border-color .2s;
+        }
+        input:focus { border-color: var(--navy); background: #fff; }
+
+        /* ── Resources ── */
+        .resources-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .resource-chip {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: #fafbff;
+            transition: all .2s;
+            user-select: none;
+        }
+        .resource-chip:hover { border-color: var(--navy); color: var(--navy); }
+        .resource-chip.selected {
+            background: var(--green-light);
+            border-color: var(--green-mid);
+            color: var(--green);
+            font-weight: 700;
+        }
+        .resource-chip input { display: none; }
+        .chip-icon { font-size: 15px; }
+
+        /* ── Drop zone ── */
+        .drop-zone {
+            border: 2px dashed var(--navy);
+            border-radius: var(--radius);
+            padding: 2.5rem 1rem;
+            text-align: center;
+            background: var(--blue-bg);
+            cursor: pointer;
+            transition: all .2s;
+            position: relative;
+        }
+        .drop-zone:hover, .drop-zone.dragover { background: #c5d9f5; border-color: #1565C0; }
+        .drop-zone p.main { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: .3rem; }
+        .drop-zone p.sub { font-size: 12px; color: var(--text-muted); }
+        .file-success {
+            display: none;
+            background: #E8F5E9;
+            border: 1.5px solid var(--green-mid);
+            border-radius: var(--radius-sm);
+            padding: 1rem 1.2rem;
+            color: var(--green);
+            font-weight: 700;
+            font-size: 14px;
+            align-items: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        .file-success.show { display: flex; }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all .2s;
+        }
+        .btn-primary { background: var(--navy); color: #fff; }
+        .btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,126,0.25); }
+        .btn-green { background: var(--green); color: #fff; }
+        .btn-green:hover { background: var(--green-mid); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--navy); color: var(--navy); }
+        .btn-outline:hover { background: var(--navy); color: #fff; }
+        .btn-full { width: 100%; padding: 14px; font-size: 1.1rem; border-radius: 12px; }
+        .btn-copy {
+            background: var(--navy);
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: var(--radius-sm);
+        }
+        .btn-copy:hover { background: var(--navy-light); }
+        .btn-copy.copied { background: var(--green); }
+
+        /* ── Loading ── */
+        .loading-card { text-align: center; padding: 3rem; }
+        .spinner {
+            width: 60px; height: 60px;
+            border: 4px solid var(--border);
+            border-top-color: var(--navy);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-card h2 { color: var(--navy); font-size: 1.3rem; margin-bottom: .5rem; }
+        .loading-card p { color: var(--text-muted); }
+
+        /* ── Progress dots ── */
+        .progress-dots { display: flex; justify-content: center; gap: 8px; margin-top: 1.5rem; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); animation: pulse-dot 1.4s ease infinite; }
+        .dot:nth-child(2) { animation-delay: .2s; }
+        .dot:nth-child(3) { animation-delay: .4s; }
+        @keyframes pulse-dot { 0%,80%,100%{opacity:.3} 40%{opacity:1;background:var(--navy)} }
+
+        /* ── Result / Prompt ── */
+        .result-header {
+            background: linear-gradient(135deg, #E8F5E9, #fff);
+            border: 1px solid #a5d6a7;
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .result-header .icon { font-size: 2.5rem; }
+        .result-header h2 { font-size: 1.3rem; font-weight: 700; color: var(--green); }
+        .result-header p { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+
+        /* ── Tabs ── */
+        .tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .tab-btn {
+            padding: 9px 20px;
+            border-radius: 50px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .tab-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ── Prompt box ── */
+        .prompt-box-wrap { position: relative; }
+        .prompt-box {
+            width: 100%;
+            min-height: 280px;
+            padding: 1.2rem 1.4rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text);
+            background: #fafbff;
+            resize: vertical;
+            direction: rtl;
+        }
+        .prompt-box:focus { outline: none; border-color: var(--navy); }
+
+        /* ── Instructions ── */
+        .instructions {
+            background: #FFF8E1;
+            border: 1px solid #FFE082;
+            border-radius: var(--radius-sm);
+            padding: 1.2rem 1.5rem;
+        }
+        .instructions h4 { font-size: 14px; font-weight: 700; color: #795548; margin-bottom: .75rem; }
+        .step-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: .6rem;
+            font-size: 13px;
+            color: var(--text);
+        }
+        .step-num {
+            min-width: 24px; height: 24px;
+            background: var(--navy);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* ── Site links ── */
+        .sites-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 1rem; }
+        .site-link {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            padding: 14px 10px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            text-decoration: none;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            transition: all .2s;
+            cursor: pointer;
+        }
+        .site-link:hover { border-color: var(--navy); background: var(--blue-bg); transform: translateY(-2px); }
+        .site-link .site-icon { font-size: 1.6rem; }
+        .site-link .site-note { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+
+        /* ── Utils ── */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: .5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .flex-end { display: flex; justify-content: flex-end; gap: .75rem; margin-top: 1.5rem; }
+
+        /* ── Tips banner ── */
+        .tip-banner {
+            background: #E8EAF6;
+            border-right: 4px solid var(--navy);
+            border-radius: var(--radius-sm);
+            padding: .9rem 1.2rem;
+            font-size: 13px;
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.7rem; }
+            .sites-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
-<body class="min-h-screen pb-10">
+<body>
 
-    <div class="max-w-4xl mx-auto pt-10 px-4">
-        
-        <div class="text-center mb-8">
-            <img src="https://i.postimg.cc/G3ghK9PH/sml-byt-hspr.png" alt="شعار المدرسة" class="h-24 mx-auto mb-4">
-            <h1 class="text-4xl font-bold text-[#1A237E] mb-2">منصة التخطيط الذكي: مَسَار</h1>
-            <p class="text-lg text-gray-600 italic">"من البصيرة إلى الأثر: نمهد لك المسار لتزرع بذور النجاح في مسيرة كل طالب."</p>
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+    <img src="https://i.postimg.cc/G3ghK9PH/sml-byt-hspr.png" alt="شعار المدرسة">
+    <h1>منصة التخطيط الذكي: مَسَار</h1>
+    <p>"من البصيرة إلى الأثر: نمهد لك المسار لتزرع بذور النجاح في مسيرة كل طالب."</p>
+</div>
+
+<!-- ═══ STEPPER ═══ -->
+<div class="stepper-wrap">
+    <div class="stepper">
+        <div class="step-item active" id="s1">
+            <div class="step-circle">1</div>
+            <div class="step-label">البيانات الأساسية</div>
         </div>
-
-        <div id="welcome-section" class="bg-[#FCE4EC] rounded-2xl p-8 shadow-md text-center max-w-2xl mx-auto mb-8 border border-pink-100">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">أهلاً بك زميلي/زميلتي في "مَسَار"! 👋</h2>
-            <p class="text-gray-700 text-lg leading-relaxed mb-6">
-                معكِ <strong>منى مصطفى كناعنه</strong>، مركزة التقييم.<br>
-                يسعدني أن أرافقك اليوم. صممنا هذه المنصة لتوفير وقتك وجهدك؛ فمن خلال خطوات بسيطة، سنقوم معاً بتحويل نتائج المسح الصفي إلى خطة تدخل دقيقة ومبنية على الموارد المتاحة في مدرستنا.
-            </p>
-            <button onclick="startWizard()" class="bg-[#1A237E] hover:bg-blue-900 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 shadow-lg">
-                ابدأ بتصميم المسار 👈
-            </button>
+        <div class="step-item" id="s2">
+            <div class="step-circle">2</div>
+            <div class="step-label">رفع المسح</div>
         </div>
+        <div class="step-item" id="s3">
+            <div class="step-circle">3</div>
+            <div class="step-label">البرومت الجاهز</div>
+        </div>
+    </div>
+</div>
 
-        <div id="wizard-section" class="bg-white rounded-2xl p-8 shadow-md hidden-step">
-            <h2 class="text-2xl font-bold text-[#1A237E] mb-6 border-b pb-2">خطوات بناء الخطة</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2">اسم المعلم/ة:</label>
-                    <input type="text" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#1A237E]" placeholder="مثال: أحمد محمد">
+<!-- ═══ MAIN ═══ -->
+<div class="container">
+
+    <!-- WELCOME -->
+    <div class="card welcome-card" id="welcome-section">
+        <h2>أهلاً بك زميلي/زميلتي في "مَسَار"! 👋</h2>
+        <p>
+            معكِ <strong>منى مصطفى كناعنه</strong>، مركزة التقييم.<br>
+            يسعدني أن أرافقك اليوم. من خلال خطوات بسيطة، ستحصل على <strong>برومت ذكي جاهز للنسخ</strong> تلصقه في أي أداة ذكاء اصطناعي (Claude، ChatGPT، Gemini) لتحصل على خطة تدخل دقيقة تلقائياً.
+        </p>
+        <button class="btn btn-primary" onclick="startWizard()">ابدأ بتصميم المسار ←</button>
+    </div>
+
+    <!-- WIZARD -->
+    <div id="wizard-section" class="hidden">
+
+        <!-- Step 1: Basic info -->
+        <div class="card" id="step1-card">
+            <div class="card-title"><span>📋</span> الخطوة 1 — البيانات الأساسية</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="teacher-name">اسم المعلم/ة</label>
+                    <input type="text" id="teacher-name" placeholder="مثال: أحمد محمد">
                 </div>
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2">اسم الصف:</label>
-                    <input type="text" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#1A237E]" placeholder="مثال: السابع أ">
+                <div class="form-group">
+                    <label for="class-name">اسم الصف</label>
+                    <input type="text" id="class-name" placeholder="مثال: السابع أ">
                 </div>
-                <div class="md:col-span-2">
-                    <label class="block text-gray-700 font-bold mb-2">عدد الحصص الأسبوعية لهذا الصف:</label>
-                    <input type="number" class="w-full md:w-1/2 px-4 py-2 border rounded-lg focus:outline-none focus:border-[#1A237E]" placeholder="مثال: 4">
+                <div class="form-group">
+                    <label for="subject-name">المادة الدراسية</label>
+                    <input type="text" id="subject-name" placeholder="مثال: اللغة العربية">
+                </div>
+                <div class="form-group">
+                    <label for="weekly-hours">عدد الحصص الأسبوعية</label>
+                    <input type="number" id="weekly-hours" placeholder="مثال: 4" min="1" max="20">
                 </div>
             </div>
 
-            <div class="mb-6">
-                <label class="block text-gray-700 font-bold mb-3">الموارد المتاحة لدعم الطلاب (اختر ما يناسب):</label>
-                <div class="flex flex-wrap gap-4">
-                    <label class="flex items-center space-x-2 space-x-reverse bg-gray-50 p-2 rounded border">
-                        <input type="checkbox" class="w-5 h-5 text-[#1B5E20]"> <span>ساعات فردية (פרטני)</span>
-                    </label>
-                    <label class="flex items-center space-x-2 space-x-reverse bg-gray-50 p-2 rounded border">
-                        <input type="checkbox" class="w-5 h-5 text-[#1B5E20]"> <span>تعليم مصحح (הוראה מתקנת)</span>
-                    </label>
-                    <label class="flex items-center space-x-2 space-x-reverse bg-gray-50 p-2 rounded border">
-                        <input type="checkbox" class="w-5 h-5 text-[#1B5E20]"> <span>برامج إثراء/גפ"ן</span>
-                    </label>
-                    <label class="flex items-center space-x-2 space-x-reverse bg-gray-50 p-2 rounded border">
-                        <input type="checkbox" class="w-5 h-5 text-[#1B5E20]"> <span>استشارة مدرسية</span>
-                    </label>
+            <div class="form-group" style="margin-bottom:1.5rem">
+                <label style="margin-bottom:10px;display:block;">الموارد المتاحة لدعم الطلاب (اختر ما يناسب)</label>
+                <div class="resources-grid" id="resources-grid">
+                    <div class="resource-chip" data-value="ساعات فردية (פרטני)"><span class="chip-icon">👤</span> ساعات فردية (פרטני)</div>
+                    <div class="resource-chip" data-value="تعليم مصحح (הוראה מתקנת)"><span class="chip-icon">✏️</span> تعليم مصحح (הוראה מתקנת)</div>
+                    <div class="resource-chip" data-value="برامج إثراء גפ״ן"><span class="chip-icon">⭐</span> برامج إثراء / גפ״ן</div>
+                    <div class="resource-chip" data-value="استشارة مدرسية"><span class="chip-icon">💬</span> استشارة مدرسية</div>
+                    <div class="resource-chip" data-value="مجموعات صغيرة داخل الصف"><span class="chip-icon">👥</span> مجموعات صغيرة داخل الصف</div>
+                    <div class="resource-chip" data-value="واجبات تمييزية"><span class="chip-icon">📝</span> واجبات تمييزية</div>
                 </div>
             </div>
 
-            <div class="mb-8">
-                <label class="block text-gray-700 font-bold mb-2">رفع نتائج المسح الصفي (ملف PDF):</label>
-                
-                <div id="drop-zone" class="border-2 border-dashed border-[#1A237E] rounded-xl p-10 text-center bg-[#E1F5FE] hover:bg-blue-100 transition cursor-pointer relative" onclick="document.getElementById('file-input').click()">
-                    <input type="file" id="file-input" accept=".pdf" class="hidden">
-                    
-                    <div id="drop-text">
-                        <p class="text-[#1A237E] font-bold text-lg mb-2">📥 اسحب وأفلت ملف الـ PDF هنا</p>
-                        <p class="text-sm text-gray-500">أو اضغط لاختيار الملف من جهازك</p>
-                    </div>
-                    
-                    <div id="file-name-display" class="hidden-step mt-2 p-3 bg-white rounded shadow text-[#1B5E20] font-bold text-lg">
-                    </div>
-                </div>
+            <div class="flex-end">
+                <button class="btn btn-primary" onclick="goToStep2()">التالي: رفع المسح ←</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Upload -->
+        <div class="card hidden" id="step2-card">
+            <div class="card-title"><span>📂</span> الخطوة 2 — رفع نتائج المسح الصفي</div>
+
+            <div class="tip-banner">
+                💡 <strong>ملاحظة:</strong> ارفع ملف PDF الخاص بنتائج المسح الصفي. ستقوم المنصة بتحليل محتواه وبناء برومت مخصص جاهز للنسخ واللصق في أي أداة ذكاء اصطناعي.
             </div>
 
-            <button onclick="processData()" class="w-full bg-[#1B5E20] hover:bg-green-800 text-white font-bold py-3 px-8 rounded-xl text-xl transition duration-300 shadow-lg">
-                تحليل البيانات وبناء الخطة ⚙️
-            </button>
+            <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+                <input type="file" id="file-input" accept=".pdf" class="hidden">
+                <div id="drop-icon" style="font-size:2.5rem;margin-bottom:.5rem;">📥</div>
+                <p class="main">اسحب وأفلت ملف PDF هنا</p>
+                <p class="sub">أو اضغط لاختيار الملف من جهازك</p>
+            </div>
+            <div class="file-success" id="file-success">
+                <span style="font-size:1.5rem">✅</span>
+                <span id="file-name-text">تم استلام الملف بنجاح</span>
+            </div>
+
+            <div class="flex-end">
+                <button class="btn btn-outline" onclick="goToStep1()">← رجوع</button>
+                <button class="btn btn-green" onclick="buildPrompt()">توليد البرومت الذكي ⚙️</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="card loading-card hidden" id="loading-section">
+        <div class="spinner"></div>
+        <h2>جاري تحليل البيانات وبناء البرومت...</h2>
+        <p>يرجى الانتظار لحظات معدودة ⏳</p>
+        <div class="progress-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results-section" class="hidden">
+
+        <div class="result-header">
+            <div class="icon">🎉</div>
+            <div>
+                <h2>تم بناء البرومت بنجاح!</h2>
+                <p>انسخ البرومت أدناه والصقه في أي أداة ذكاء اصطناعي — ثم ارفع ملف الـ PDF معه للحصول على خطة التدخل كاملة.</p>
+            </div>
         </div>
 
-        <div id="loading-section" class="hidden-step text-center py-20">
-            <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#1A237E] mb-4"></div>
-            <h2 class="text-2xl font-bold text-[#1A237E]">جاري تحليل البيانات وبناء الخطط...</h2>
-            <p class="text-gray-600 mt-2">قد يستغرق الأمر ثوانٍ معدودة، يرجى الانتظار ⏳</p>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('prompt-tab', this)">📋 البرومت الجاهز</button>
+            <button class="tab-btn" onclick="switchTab('instructions-tab', this)">📖 طريقة الاستخدام</button>
+            <button class="tab-btn" onclick="switchTab('sites-tab', this)">🌐 المواقع المقترحة</button>
         </div>
 
-        <div id="results-section" class="hidden-step">
-            <div class="bg-white rounded-2xl p-8 shadow-md mb-6 border-t-4 border-[#1B5E20]">
-                <h2 class="text-2xl font-bold text-[#1B5E20] mb-2">✅ تم بناء خطة التدخل بنجاح!</h2>
-                <p class="text-gray-600 mb-6 border-b pb-4">يمكنك مراجعة الخطة المقترحة لكل طالب، وتعديلها أو إضافة ملاحظاتك قبل الحفظ.</p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm">
-                        <div class="font-bold text-lg text-[#1A237E] mb-2">👤 الطالب: محمد علي</div>
-                        <div class="mb-2">
-                            <span class="text-sm font-bold text-red-600 bg-red-100 px-2 py-1 rounded">نقطة الضعف:</span>
-                            <span class="text-sm text-gray-700">صعوبة في استخراج المعلومات المبطنة</span>
-                        </div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1 mt-3">التدخل المقترح (قابل للتعديل):</label>
-                        <textarea class="w-full p-2 border rounded focus:outline-none focus:border-[#1B5E20]" rows="3">دمج الطالب في حصص التعليم المصحح (הוראה מתקנת) بمعدل حصة أسبوعياً.</textarea>
+        <!-- Tab: Prompt -->
+        <div class="tab-content active" id="prompt-tab">
+            <div class="card" style="padding:1.5rem">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px;">
+                    <span style="font-size:14px;font-weight:700;color:var(--navy);">البرومت المولَّد (قابل للتعديل)</span>
+                    <button class="btn btn-copy" id="copy-btn" onclick="copyPrompt()">📋 نسخ البرومت</button>
+                </div>
+                <div class="prompt-box-wrap">
+                    <textarea class="prompt-box" id="generated-prompt"></textarea>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap;">
+                    <button class="btn btn-outline" style="font-size:13px;padding:8px 16px" onclick="resetAll()">🔄 بناء برومت جديد</button>
+                    <button class="btn btn-green" style="font-size:13px;padding:8px 16px" onclick="printPrompt()">🖨️ طباعة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Instructions -->
+        <div class="tab-content" id="instructions-tab">
+            <div class="card">
+                <div class="instructions">
+                    <h4>📖 كيف تستخدم البرومت خطوة بخطوة</h4>
+                    <div class="step-row">
+                        <div class="step-num">1</div>
+                        <div>اضغط على زر <strong>"نسخ البرومت"</strong> في تبويب "البرومت الجاهز"</div>
                     </div>
-
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm">
-                        <div class="font-bold text-lg text-[#1A237E] mb-2">👤 الطالبة: سلمى حسن</div>
-                        <div class="mb-2">
-                            <span class="text-sm font-bold text-red-600 bg-red-100 px-2 py-1 rounded">نقطة الضعف:</span>
-                            <span class="text-sm text-gray-700">أخطاء إملائية متكررة وضعف في الثروة اللغوية</span>
-                        </div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1 mt-3">التدخل المقترح (قابل للتعديل):</label>
-                        <textarea class="w-full p-2 border rounded focus:outline-none focus:border-[#1B5E20]" rows="3">تخصيص ساعة فردية (פרטני) أسبوعياً، وإدراجها ضمن برنامج الإثراء اللغوي.</textarea>
+                    <div class="step-row">
+                        <div class="step-num">2</div>
+                        <div>افتح أي موقع ذكاء اصطناعي (Claude / ChatGPT / Gemini) — انظر تبويب "المواقع المقترحة"</div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">3</div>
+                        <div>الصق البرومت في مربع المحادثة</div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">4</div>
+                        <div><strong>ارفع ملف PDF</strong> المسح الصفي مباشرةً مع البرومت (معظم المواقع تدعم رفع الملفات)</div>
+                    </div>
+                    <div class="step-row">
+                        <div class="step-num">5</div>
+                        <div>اضغط إرسال وانتظر الخطة الكاملة!</div>
                     </div>
                 </div>
 
-                <div class="flex flex-col md:flex-row gap-4 justify-center mt-8">
-                    <button onclick="alert('تم حفظ الخطة بنجاح في أرشيفك!')" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-lg shadow transition">
-                        💾 حفظ في أرشيفي
-                    </button>
-                    <button onclick="alert('جاري تجهيز ملف Word للتحميل...')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow transition">
-                        📄 تحميل كملف Word
-                    </button>
-                    <button onclick="alert('جاري تجهيز ملف PDF للتحميل...')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow transition">
-                        📉 تحميل كملف PDF
-                    </button>
+                <div class="tip-banner mt-3" style="background:#E8F5E9;border-color:var(--green-mid);color:var(--green);">
+                    ✅ <strong>نصيحة:</strong> في Claude.ai وChatGPT-4، يمكنك رفع PDF مباشرةً مع البرومت في نفس الرسالة للحصول على أفضل النتائج.
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Sites -->
+        <div class="tab-content" id="sites-tab">
+            <div class="card">
+                <p style="font-size:14px;color:var(--text-muted);margin-bottom:1rem;">اختر أحد هذه المواقع، والصق فيه البرومت المنسوخ:</p>
+                <div class="sites-grid">
+                    <a class="site-link" href="https://claude.ai" target="_blank">
+                        <div class="site-icon">🤖</div>
+                        <div>Claude.ai</div>
+                        <div class="site-note">الأفضل للتحليل</div>
+                    </a>
+                    <a class="site-link" href="https://chat.openai.com" target="_blank">
+                        <div class="site-icon">💬</div>
+                        <div>ChatGPT</div>
+                        <div class="site-note">يدعم PDF</div>
+                    </a>
+                    <a class="site-link" href="https://gemini.google.com" target="_blank">
+                        <div class="site-icon">✨</div>
+                        <div>Gemini</div>
+                        <div class="site-note">مجاني ومتاح</div>
+                    </a>
+                    <a class="site-link" href="https://copilot.microsoft.com" target="_blank">
+                        <div class="site-icon">🪟</div>
+                        <div>Copilot</div>
+                        <div class="site-note">مدمج مع Office</div>
+                    </a>
+                </div>
+                <div class="tip-banner mt-2">
+                    💡 <strong>تلميح:</strong> يمكنك أيضاً استخدام نفس البرومت في أي أداة ذكاء اصطناعي أخرى متاحة لك في المدرسة.
                 </div>
             </div>
         </div>
 
     </div>
+</div><!-- /container -->
 
-    <script>
-        function startWizard() {
-            document.getElementById('welcome-section').style.display = 'none';
-            document.getElementById('wizard-section').classList.remove('hidden-step');
+<script>
+    // ── State ──
+    let uploadedFile = null;
+
+    // ── Stepper ──
+    function setStep(n) {
+        [1,2,3].forEach(i => {
+            const el = document.getElementById('s'+i);
+            el.classList.remove('active','done');
+            if (i < n) el.classList.add('done');
+            else if (i === n) el.classList.add('active');
+        });
+    }
+
+    // ── Welcome → Wizard ──
+    function startWizard() {
+        document.getElementById('welcome-section').classList.add('hidden');
+        document.getElementById('wizard-section').classList.remove('hidden');
+        setStep(1);
+    }
+
+    // ── Resource chips (multi-select) ──
+    document.getElementById('resources-grid').addEventListener('click', function(e) {
+        const chip = e.target.closest('.resource-chip');
+        if (chip) chip.classList.toggle('selected');
+    });
+
+    // ── Step 1 → Step 2 ──
+    function goToStep2() {
+        const teacher = document.getElementById('teacher-name').value.trim();
+        const cls = document.getElementById('class-name').value.trim();
+        if (!teacher || !cls) {
+            alert('يرجى تعبئة اسم المعلم/ة واسم الصف على الأقل.');
+            return;
+        }
+        document.getElementById('step1-card').classList.add('hidden');
+        document.getElementById('step2-card').classList.remove('hidden');
+        setStep(2);
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    // ── Step 2 → Step 1 ──
+    function goToStep1() {
+        document.getElementById('step2-card').classList.add('hidden');
+        document.getElementById('step1-card').classList.remove('hidden');
+        setStep(1);
+    }
+
+    // ── File handling ──
+    const fileInput = document.getElementById('file-input');
+
+    // Prevent browser default for drag events everywhere
+    ['dragenter','dragover','dragleave','drop'].forEach(evName => {
+        document.addEventListener(evName, e => { e.preventDefault(); e.stopPropagation(); });
+    });
+
+    // Highlight drop zone on drag
+    document.addEventListener('dragenter', e => {
+        const dz = document.getElementById('drop-zone');
+        if (dz) dz.classList.add('dragover');
+    });
+    document.addEventListener('dragleave', e => {
+        // Only remove highlight when leaving the window entirely
+        if (e.relatedTarget === null) {
+            const dz = document.getElementById('drop-zone');
+            if (dz) dz.classList.remove('dragover');
+        }
+    });
+    document.addEventListener('drop', e => {
+        const dz = document.getElementById('drop-zone');
+        if (dz) dz.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', function() { handleFiles(this.files); });
+
+    function handleFiles(files) {
+        if (!files.length) return;
+        const file = files[0];
+        if (file.type !== 'application/pdf' && !file.name.endsWith('.pdf')) {
+            alert('الرجاء رفع ملف بصيغة PDF فقط!');
+            return;
+        }
+        uploadedFile = file;
+        document.getElementById('drop-icon').textContent = '📄';
+        document.getElementById('file-success').classList.add('show');
+        document.getElementById('file-name-text').textContent = '✅ ' + file.name;
+    }
+
+    // ── Build Prompt ──
+    function buildPrompt() {
+        if (!uploadedFile) {
+            alert('يرجى رفع ملف PDF أولاً.');
+            return;
         }
 
-        // --- أكواد تفعيل منطقة رفع الملفات (Drag & Drop) ---
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('file-input');
-        const dropText = document.getElementById('drop-text');
-        const fileNameDisplay = document.getElementById('file-name-display');
+        const teacher = document.getElementById('teacher-name').value.trim();
+        const cls = document.getElementById('class-name').value.trim();
+        const subject = document.getElementById('subject-name').value.trim() || 'غير محدد';
+        const hours = document.getElementById('weekly-hours').value || 'غير محدد';
+        const resources = [...document.querySelectorAll('.resource-chip.selected')]
+            .map(el => el.getAttribute('data-value'));
 
-        // منع السلوك الافتراضي للمتصفح عند سحب الملفات
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, preventDefaults, false);
-            document.body.addEventListener(eventName, preventDefaults, false);
-        });
+        // Show loading
+        document.getElementById('wizard-section').classList.add('hidden');
+        document.getElementById('loading-section').classList.remove('hidden');
+        setStep(3);
 
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
+        setTimeout(() => {
+            document.getElementById('loading-section').classList.add('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
 
-        // تظليل المربع عند مرور الملف فوقه
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => dropZone.classList.add('bg-blue-200', 'border-blue-500'), false);
-        });
+            const resourcesText = resources.length
+                ? resources.map((r, i) => `   ${i+1}. ${r}`).join('\n')
+                : '   (لم تُحدَّد موارد)';
 
-        // إزالة التظليل عند إبعاد الملف
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => dropZone.classList.remove('bg-blue-200', 'border-blue-500'), false);
-        });
+            const prompt = `أنت خبير تربوي متخصص في التقييم وخطط التدخل الفردية. مهمتك تحليل نتائج المسح الصفي وبناء خطة تدخل عملية لكل طالب.
 
-        // معالجة الملف عند إفلاته
-        dropZone.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            handleFiles(files);
-        }, false);
+═══════════════════════════════
+معلومات الصف
+═══════════════════════════════
+• المعلم/ة: ${teacher}
+• الصف: ${cls}
+• المادة: ${subject}
+• عدد الحصص الأسبوعية: ${hours}
 
-        // معالجة الملف عند الضغط والاختيار اليدوي
-        fileInput.addEventListener('change', function() {
-            handleFiles(this.files);
-        });
+═══════════════════════════════
+الموارد المتاحة في المدرسة
+═══════════════════════════════
+${resourcesText}
 
-        // دالة التأكد من الملف وعرض اسمه
-        function handleFiles(files) {
-            if (files.length > 0) {
-                const file = files[0];
-                if(file.type === "application/pdf" || file.name.endsWith('.pdf')) {
-                    dropText.style.display = 'none'; // إخفاء نص "اسحب وأفلت"
-                    fileNameDisplay.classList.remove('hidden-step'); // إظهار مربع اسم الملف
-                    fileNameDisplay.innerHTML = `✅ تم استلام الملف بنجاح:<br><span class="text-gray-600 text-sm">${file.name}</span>`;
-                } else {
-                    alert("الرجاء رفع ملف بصيغة PDF فقط!");
-                }
-            }
-        }
-        // ------------------------------------------------
+═══════════════════════════════
+المهمة المطلوبة
+═══════════════════════════════
+قم بتحليل ملف PDF المرفق (نتائج المسح الصفي) وأخرج لي:
 
-        function processData() {
-            // التحقق من رفع ملف قبل المتابعة (اختياري)
-            if(dropText.style.display !== 'none') {
-                alert("يرجى رفع ملف المسح الصفي (PDF) أولاً قبل المتابعة.");
-                return;
-            }
+1. جدول موجز بأسماء الطلاب ومستوى كل منهم (ممتاز / جيد / يحتاج دعم / يحتاج تدخل عاجل)
 
-            document.getElementById('wizard-section').style.display = 'none';
-            document.getElementById('loading-section').classList.remove('hidden-step');
-            
-            setTimeout(() => {
-                document.getElementById('loading-section').style.display = 'none';
-                document.getElementById('results-section').classList.remove('hidden-step');
-            }, 3000);
-        }
-    </script>
+2. لكل طالب يحتاج دعمًا أو تدخلاً، اكتب:
+   أ) نقاط الضعف المحددة المستخلصة من النتائج
+   ب) نقاط القوة التي يمكن البناء عليها
+   ج) خطة التدخل المقترحة مع توظيف الموارد المتاحة المذكورة أعلاه
+   د) الأهداف القصيرة المدى (4 أسابيع)
+   ه) أسلوب التقييم المقترح لقياس التقدم
+
+3. خطة توزيع الموارد الأسبوعية: من يحصل على أي دعم ومتى
+
+4. توصيات للمعلم داخل الصف (استراتيجيات تمييز للتعليم)
+
+═══════════════════════════════
+تعليمات الأسلوب
+═══════════════════════════════
+• اكتب باللغة العربية الفصحى البسيطة
+• كن محدداً وعملياً — تجنب الإجابات العامة
+• استند دائماً إلى البيانات الموجودة في الملف المرفق
+• رتّب الطلاب من الأكثر إلحاحاً للأقل إلحاحاً
+
+ملف المسح الصفي مرفق مع هذه الرسالة. ابدأ التحليل الآن.`;
+
+            document.getElementById('generated-prompt').value = prompt;
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }, 2500);
+    }
+
+    // ── Copy ──
+    function copyPrompt() {
+        const ta = document.getElementById('generated-prompt');
+        ta.select();
+        document.execCommand('copy');
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = '✅ تم النسخ!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = '📋 نسخ البرومت';
+            btn.classList.remove('copied');
+        }, 2500);
+    }
+
+    // ── Print ──
+    function printPrompt() {
+        const content = document.getElementById('generated-prompt').value;
+        const w = window.open('', '_blank');
+        w.document.write(`<html dir="rtl"><head><meta charset="UTF-8">
+            <style>body{font-family:Arial,sans-serif;padding:2cm;direction:rtl;font-size:13px;line-height:1.8;white-space:pre-wrap;}</style>
+            </head><body>${content.replace(/</g,'&lt;')}</body></html>`);
+        w.document.close();
+        w.print();
+    }
+
+    // ── Switch Tab ──
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // ── Reset ──
+    function resetAll() {
+        if (!confirm('هل تريد إعادة البداية وبناء برومت جديد؟')) return;
+        document.getElementById('results-section').classList.add('hidden');
+        document.getElementById('wizard-section').classList.remove('hidden');
+        document.getElementById('step2-card').classList.add('hidden');
+        document.getElementById('step1-card').classList.remove('hidden');
+        document.querySelectorAll('.resource-chip.selected').forEach(c => c.classList.remove('selected'));
+        document.getElementById('file-success').classList.remove('show');
+        document.getElementById('drop-icon').textContent = '📥';
+        uploadedFile = null;
+        fileInput.value = '';
+        setStep(1);
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+</script>
 </body>
 </html>
